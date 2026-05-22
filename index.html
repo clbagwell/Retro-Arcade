@@ -23,7 +23,7 @@
             margin: 0;
             display: flex;
             flex-direction: column;
-            min-height: 100vh; /* Changed from height: 100vh */
+            min-height: 100vh;
             color: var(--midnight);
         }
 
@@ -70,7 +70,6 @@
             transition: all 0.3s ease;
         }
 
-        /* Mobile-only toggle button */
         #mobile-toggle {
             display: none;
             background: var(--midnight);
@@ -236,17 +235,14 @@
                 grid-template-columns: 1fr; 
                 padding: 1rem;
             }
-            
             #mobile-toggle {
                 display: block;
             }
-
             .birthday-card { 
                 width: 90vw; 
             }
         }
 
-        /* Class to hide form on mobile */
         .collapsed {
             display: none;
         }
@@ -282,6 +278,8 @@
                     <option value="parent">Parent</option>
                     <option value="colleague">Colleague</option>
                     <option value="sibling">Sibling</option>
+                    <option value="child">Child</option>
+                    <option value="teen">Teenager</option>
                 </select>
             </div>
             <div class="input-group">
@@ -291,6 +289,7 @@
                     <option value="witty">😏 Witty</option>
                     <option value="warm">☀️ Warm</option>
                     <option value="minimal">☁️ Minimal</option>
+                    <option value="silly">🤪 Silly/Funny</option>
                 </select>
             </div>
             <div class="button-stack">
@@ -336,6 +335,12 @@
             mid: ["[NAME], [AGE].", "[NAME]. Happy [AGE_ORD].", "[NAME], cheers to [AGE]!", "To [AGE] more.", "Happy [AGE_ORD]!", "[NAME], [AGE] years strong.", "Celebrating [AGE].", "A toast to [AGE]."],
             hobby: [`Enjoy the [HOBBY].`, `More [HOBBY] this year.`, `Keep [HOBBY]ing.`, `Best of luck with [HOBBY].`, `To more [HOBBY].`, `Enjoy your [HOBBY] time.`, `More [HOBBY] soon.`, `[HOBBY] on.`],
             close: ["Best,", "Cheers,", "Sincerely,", "Warmly,", "Regards,", "Peace,", "Take care,", "Later,"]
+        },
+        silly: {
+            open: ["Holy guacamole!", "Bazinga!", "Prepare yourself for...", "A wild birthday appears for...", "Behold the legend of...", "Stop everything! It's time to celebrate...", "Ding ding ding! We have a winner!", "Hark! The bells toll for..."],
+            mid: ["who has managed to reach [AGE] without eating a glue stick.", "reaching [AGE] and still not knowing how to do laundry.", "turning [AGE]—half human, half cake at this point.", "surviving [AGE] years of sheer randomness.", "hitting age [AGE] with the grace of a dancing potato.", "who is officially [AGE] but mentally still about five.", "making it to [AGE] without a single adult-looking day in their life.", "celebrating [AGE] years of being a professional chaos-agent."],
+            hobby: ["I hope you spend your day [HOBBY]ing until your brain melts!", "May your [HOBBY] skills reach galactic levels this year.", "Less [HOBBY]ing, more cake eating! That's the rule.", "I've alerted the authorities about your obsession with [HOBBY].", "May your [HOBBY] be the talk of the town (for the wrong reasons).", "I hope you get a gold medal in [HOBBY] this year.", "May your [HOBBY] sessions be long and your naps be longer.", "I'm convinced you're actually a [HOBBY] wizard."],
+            close: ["Keep being a weirdo,", "Sending you a high-five and a taco,", "Your favorite chaotic energy,", "Stay goofy,", "With a sprinkle of madness,", "Your partner in crime,", "Stay legendary (and strange),", "Over and out,"]
         }
     };
 
@@ -383,7 +388,6 @@
 
         renderCard(message);
 
-        // On mobile, automatically collapse the form after generating to show the card
         if(window.innerWidth < 900) {
             document.getElementById('form-panel').classList.add('collapsed');
         }
