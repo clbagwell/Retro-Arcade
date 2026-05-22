@@ -1,0 +1,545 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LuxeCard Studio | Birthday Edition</title>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;500;700&family=Playfair+Display:ital,wght@0,600;1,600&family=Great+Vibes&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --accent-blue: #3a86ff; 
+            --deep-blue: #023e8a;
+            --midnight: #03045e;
+            --light-blue: #caf0f8;
+            --glass: rgba(255, 255, 255, 0.8);
+            --shadow: 0 10px 30px rgba(58, 134, 255, 0.3);
+        }
+
+        body {
+            font-family: 'Montserrat', sans-serif;
+            background-color: #e0f2fe;
+            background-image: radial-gradient(#bae6fd 1px, transparent 1px);
+            background-size: 20px 20px;
+            margin: 0;
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+            color: var(--midnight);
+        }
+
+        header {
+            text-align: center;
+            padding: 2rem 0;
+            background: linear-gradient(135deg, var(--deep-blue), var(--accent-blue));
+            color: white;
+            box-shadow: var(--shadow);
+        }
+
+        header h1 {
+            font-family: 'Playfair Display', serif;
+            font-size: 2.5rem;
+            margin: 0;
+            text-transform: uppercase;
+            letter-spacing: 4px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+
+        .app-container {
+            display: grid;
+            grid-template-columns: 380px 1fr;
+            gap: 2rem;
+            padding: 2rem;
+            max-width: 1400px;
+            margin: 0 auto;
+            width: 100%;
+            box-sizing: border-box;
+            flex: 1;
+            overflow: hidden;
+        }
+
+        .studio-panel {
+            background: var(--glass);
+            backdrop-filter: blur(10px);
+            padding: 2rem;
+            border-radius: 20px;
+            box-shadow: var(--shadow);
+            border: 2px solid white;
+            display: flex;
+            flex-direction: column;
+            gap: 1.2rem;
+            height: fit-content;
+        }
+
+        .input-group {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        label {
+            font-size: 0.8rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            color: var(--deep-blue);
+        }
+
+        input, select {
+            padding: 12px;
+            border: 1px solid var(--accent-blue);
+            border-radius: 8px;
+            font-family: inherit;
+            transition: all 0.3s;
+        }
+
+        input:focus, select:focus {
+            outline: none;
+            border-color: var(--midnight);
+            box-shadow: 0 0 0 3px rgba(58, 134, 255, 0.2);
+        }
+
+        .button-stack {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            margin-top: 1rem;
+        }
+
+        .generate-btn {
+            background: var(--midnight);
+            color: white;
+            border: none;
+            padding: 15px;
+            border-radius: 8px;
+            font-weight: 700;
+            cursor: pointer;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            transition: all 0.3s;
+        }
+
+        .generate-btn:hover {
+            background: var(--accent-blue);
+            transform: translateY(-2px);
+        }
+
+        .lucky-btn {
+            background: white;
+            color: var(--midnight);
+            border: 2px dashed var(--accent-blue);
+            padding: 12px;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .lucky-btn:hover {
+            background: var(--accent-blue);
+            color: white;
+        }
+
+        .canvas {
+            overflow-y: auto;
+            padding: 1rem;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 3rem;
+            scroll-behavior: smooth;
+        }
+
+        .card-wrapper {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 1rem;
+            animation: balloonIn 0.7s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+
+        .birthday-card {
+            width: 500px;
+            min-height: 300px;
+            background: var(--light-blue);
+            padding: 3rem;
+            box-sizing: border-box;
+            border-radius: 2px;
+            box-shadow: 0 20px 50px rgba(0,0,0,0.1);
+            position: relative;
+            border: 1px solid white;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            text-align: center;
+            background-image: linear-gradient(to bottom right, #fff, var(--light-blue));
+        }
+
+        .birthday-card::after {
+            content: '';
+            position: absolute;
+            top: 20px; left: 20px; right: 20px; bottom: 20px;
+            border: 1px solid var(--accent-blue);
+            pointer-events: none;
+        }
+
+        .card-text {
+            font-family: 'Great Vibes', cursive;
+            font-size: 2rem;
+            color: #333;
+            line-height: 1.4;
+            z-index: 1;
+        }
+
+        .card-actions {
+            display: flex;
+            gap: 10px;
+        }
+
+        .action-btn {
+            background: white;
+            border: 1px solid var(--accent-blue);
+            padding: 8px 16px;
+            border-radius: 20px;
+            cursor: pointer;
+            font-size: 0.8rem;
+            color: var(--deep-blue);
+            transition: all 0.2s;
+            font-family: 'Montserrat', sans-serif;
+            font-weight: 600;
+        }
+
+        .action-btn:hover {
+            background: var(--accent-blue);
+            color: white;
+        }
+
+        @keyframes balloonIn {
+            0% { transform: scale(0) rotate(-10deg); opacity: 0; }
+            100% { transform: scale(1) rotate(0deg); opacity: 1; }
+        }
+
+        @media (max-width: 900px) {
+            .app-container { grid-template-columns: 1fr; overflow-y: auto; }
+            .birthday-card { width: 90vw; }
+        }
+    </style>
+</head>
+<body>
+
+<header>
+    <h1>✨ LuxeCard Studio ✨</h1>
+</header>
+
+<div class="app-container">
+    <aside class="studio-panel">
+        <div class="input-group">
+            <label>Recipient Name</label>
+            <input type="text" id="name" placeholder="e.g. Julianne">
+        </div>
+        <div class="input-group">
+            <label>Age</label>
+            <input type="number" id="age" placeholder="e.g. 30">
+        </div>
+        <div class="input-group">
+            <label>Favorite Hobby</label>
+            <input type="text" id="hobby" placeholder="e.g. oil painting">
+        </div>
+        <div class="input-group">
+            <label>Relationship</label>
+            <select id="relation">
+                <option value="friend">Friend</option>
+                <option value="partner">Partner</option>
+                <option value="parent">Parent</option>
+                <option value="colleague">Colleague</option>
+                <option value="sibling">Sibling</option>
+            </select>
+        </div>
+        <div class="input-group">
+            <label>Mood</label>
+            <select id="tone">
+                <option value="elegant">✨ Elegant</option>
+                <option value="witty">😏 Witty</option>
+                <option value="warm">☀️ Warm</option>
+                <option value="minimal">☁️ Minimal</option>
+            </select>
+        </div>
+        <div class="button-stack">
+            <button class="generate-btn" onclick="composeCard()">Compose Card</button>
+            <button class="lucky-btn" onclick="feelingLucky()">I'm Feeling Lucky 🍀</button>
+        </div>
+    </aside>
+
+    <main class="canvas" id="canvas">
+    </main>
+</div>
+
+<script>
+    const bdayAudio = new Audio('birthday.mp3'); 
+
+    const fragments = {
+        elegant: {
+            open: [
+                "Wishing a magnificent birthday to", 
+                "Celebrating the wonderful", 
+                "To the incomparable",
+                "With utmost admiration for",
+                "Wishing a day of serenity and beauty to",
+                "To a truly exceptional soul,",
+                "Celebrating the grace and brilliance of",
+                "My warmest wishes for a splendid day to"
+            ],
+            mid: [
+                "as you embrace your [AGE_ORD] year.", 
+                "on your [AGE_ORD] anniversary of being amazing.", 
+                "reaching the milestone of [AGE_ORD] with such grace.",
+                "as you enter your [AGE_ORD] year of splendor.",
+                "celebrating [AGE] years of timeless beauty.",
+                "marking the [AGE_ORD] year of your wonderful journey.",
+                "on the occasion of your [AGE_ORD] birthday,",
+                "as you celebrate [AGE] years of wisdom and elegance."
+            ],
+            hobby: [
+                "May your year be as vibrant and inspiring as your passion for [HOBBY].", 
+                "I hope this year brings you endless joy and more time for [HOBBY].",
+                "May your days be as rich and fulfilling as your love for [HOBBY].",
+                "I hope this new chapter grants you infinite moments of peace and [HOBBY].",
+                "May the artistry of [HOBBY] continue to bring light to your life.",
+                "Wishing you a year of growth, discovery, and plenty of [HOBBY].",
+                "I hope your passion for [HOBBY] leads you to new and wonderful heights.",
+                "May your heart always find rhythm and joy in [HOBBY]."
+            ],
+            close: [
+                "With deepest affection,", 
+                "Wishing you a year of elegance and joy,",
+                "With timeless respect and love,",
+                "Wishing you an eternal spring,",
+                "Stay radiant and inspired,",
+                "With my sincerest wishes,",
+                "To your continued brilliance,",
+                "Ever yours in admiration,"
+            ]
+        },
+        witty: {
+            open: [
+                "HBD to", 
+                "Cheers to", 
+                "Congratulations to",
+                "Happy Birthday to the only person who",
+                "A toast to the legend that is",
+                "Sending a pity party to",
+                "Alert the media! It's the birthday of",
+                "Happy birthday to my favorite headache,"
+            ],
+            mid: [
+                "for surviving [AGE] years of this chaos.", 
+                "on turning [AGE]. You're officially a classic.", 
+                "reaching age [AGE] without a manual.",
+                "for making [AGE] look significantly less terrifying.",
+                "on turning [AGE]—don't worry, you're still not as old as you'll be next year.",
+                "reaching [AGE] without being arrested. Impressive.",
+                "on officially becoming a vintage model at age [AGE].",
+                "surviving [AGE] years of being you. That's the real achievement."
+            ],
+            hobby: [
+                "Now stop [HOBBY]ing for five minutes and eat some cake!", 
+                "I hope you spend your [AGE_ORD] year doing way too much [HOBBY].",
+                "If you spend half as much time [HOBBY]ing as you do complaining about your age, you'll be happy!",
+                "Maybe at [AGE] you'll finally get a trophy for your [HOBBY] skills.",
+                "I'd tell you to take up a new hobby, but [HOBBY] is already weird enough.",
+                "May your [HOBBY] skills improve faster than your hairline recedes.",
+                "Hope your day is filled with cake and an irresponsible amount of [HOBBY].",
+                "I'm only here for the cake, but I'll congratulate your [HOBBY] progress too."
+            ],
+            close: [
+                "Stay legendary,", 
+                "Your favorite person,",
+                "Keep it weird,",
+                "Stay chaotic,",
+                "With moderate affection,",
+                "Don't let the old age win,",
+                "Cheers to the chaos,",
+                "Your benevolent overlord,"
+            ]
+        },
+        warm: {
+            open: [
+                "Happy Birthday, dear", 
+                "Sending so much love to", 
+                "To my wonderful",
+                "To my favorite person in the world,",
+                "My heart is full today celebrating",
+                "Sending a giant hug to",
+                "To the light of my life,",
+                "Wishing the happiest of days to"
+            ],
+            mid: [
+                "on your [AGE_ORD] birthday.", 
+                "as you celebrate [AGE] beautiful years.", 
+                "on turning [AGE] today.",
+                "on your [AGE_ORD] birthday celebration.",
+                "as you turn [AGE] and keep making us smile.",
+                "celebrating [AGE] years of your kind heart.",
+                "as you embark on your [AGE_ORD] year of life.",
+                "on a day that is just as special as you are at [AGE]."
+            ],
+            hobby: [
+                "I love how your eyes light up when you talk about [HOBBY].", 
+                "I hope your day is filled with [HOBBY] and laughter.",
+                "Your passion for [HOBBY] is a joy to witness.",
+                "I can't wait to spend more time [HOBBY]ing with you.",
+                "May your year be filled with the same happiness you find in [HOBBY].",
+                "I hope you get to spend your whole birthday [HOBBY]ing.",
+                "Seeing you enjoy [HOBBY] is my favorite thing in the world.",
+                "Wishing you a day of pure relaxation and plenty of [HOBBY]."
+            ],
+            close: [
+                "With all my love,", 
+                "Always thinking of you,",
+                "All my love, always,",
+                "Forever your biggest fan,",
+                "With a heart full of love,",
+                "Wishing you the world,",
+                "Love you to the moon and back,",
+                "Yours forever,"
+            ]
+        },
+        minimal: {
+            open: [
+                "Happy Birthday", 
+                "Cheers to", 
+                "Best wishes",
+                "HBD",
+                "Warmest wishes",
+                "Salutations",
+                "Joyous day",
+                "Congrats"
+            ],
+            mid: [
+                "[NAME], [AGE].", 
+                "[NAME]. Happy [AGE_ORD].", 
+                "[NAME], cheers to [AGE]!",
+                "To [AGE] more.",
+                "Happy [AGE_ORD]!",
+                "[NAME], [AGE] years strong.",
+                "Celebrating [AGE].",
+                "A toast to [AGE]."
+            ],
+            hobby: [
+                `Enjoy the [HOBBY].`, 
+                `More [HOBBY] this year.`,
+                `Keep [HOBBY]ing.`,
+                `Best of luck with [HOBBY].`,
+                `To more [HOBBY].`,
+                `Enjoy your [HOBBY] time.`,
+                `More [HOBBY] soon.`,
+                `[HOBBY] on.`
+            ],
+            close: [
+                "Best,", 
+                "Cheers,",
+                "Sincerely,",
+                "Warmly,",
+                "Regards,",
+                "Peace,",
+                "Take care,",
+                "Later,"
+            ]
+        }
+    };
+
+    const luckyData = {
+        names: ["Sir Paws-a-Lot", "Captain Sparkles", "Grandma Glitzy", "Professor Noodle", "The Great Gazoo", "Baron von Fancy-Pants", "Lady Marmalade", "Detective Doohickey"],
+        hobbies: ["competitive extreme ironing", "collecting vintage belly-button lint", "professional napping", "arguing with pigeons", "aggressive knitting", "extreme underwater basket weaving", "staring at clouds", "competitive toe-curling"]
+    };
+
+    function getOrdinal(n) {
+        if (!n || isNaN(n)) return n;
+        const s = ["th", "st", "nd", "rd"];
+        const v = n % 100;
+        return n + (s[(v - 20) % 10] || s[v] || s[0]);
+    }
+
+    function feelingLucky() {
+        const randomName = luckyData.names[Math.floor(Math.random() * luckyData.names.length)];
+        const randomHobby = luckyData.hobbies[Math.floor(Math.random() * luckyData.hobbies.length)];
+        const randomAge = Math.floor(Math.random() * 100) + 1;
+
+        document.getElementById('name').value = randomName;
+        document.getElementById('hobby').value = randomHobby;
+        document.getElementById('age').value = randomAge;
+        
+        composeCard();
+    }
+
+    function composeCard() {
+        const name = document.getElementById('name').value || "Someone Special";
+        const ageValue = document.getElementById('age').value;
+        const age = ageValue || "another";
+        const ageOrdinal = getOrdinal(ageValue) || "another";
+        const hobby = document.getElementById('hobby').value || "everything you love";
+        const tone = document.getElementById('tone').value;
+        
+        const set = fragments[tone];
+        const getRandom = (arr) => arr[Math.floor(Math.random() * arr.length)];
+
+        let message = `${getRandom(set.open)} ${name}, ${getRandom(set.mid)} ${getRandom(set.hobby)} \n\n ${getRandom(set.close)}`;
+        
+        message = message.replace(/\[NAME\]/g, name)
+                         .replace(/\[AGE\]/g, age)
+                         .replace(/\[AGE_ORD\]/g, ageOrdinal)
+                         .replace(/\[HOBBY\]/g, hobby);
+
+        renderCard(message);
+    }
+
+    function renderCard(text) {
+        const canvas = document.getElementById('canvas');
+        const wrapper = document.createElement('div');
+        wrapper.className = 'card-wrapper';
+
+        const card = document.createElement('div');
+        card.className = 'birthday-card';
+        card.innerHTML = `<div class="card-text">${text}</div>`;
+
+        const actionContainer = document.createElement('div');
+        actionContainer.className = 'card-actions';
+
+        const copyBtn = document.createElement('button');
+        copyBtn.className = 'action-btn';
+        copyBtn.innerText = '📋 Copy Text';
+        copyBtn.onclick = () => {
+            navigator.clipboard.writeText(text);
+            copyBtn.innerText = '✅ Copied!';
+            setTimeout(() => copyBtn.innerText = '📋 Copy Text', 2000);
+        };
+
+        const musicBtn = document.createElement('button');
+        musicBtn.className = 'action-btn';
+        musicBtn.innerText = '🎵 Play Music';
+        musicBtn.onclick = () => {
+            bdayAudio.currentTime = 0;
+            bdayAudio.play().catch(error => {
+                console.error("Audio Error:", error);
+                alert("🎵 Music file not found! Please make sure 'birthday.mp3' is in your folder.");
+            });
+        };
+
+        const stopBtn = document.createElement('button');
+        stopBtn.className = 'action-btn';
+        stopBtn.innerText = '⏹️ Stop Music';
+        stopBtn.onclick = () => {
+            bdayAudio.pause();
+            bdayAudio.currentTime = 0;
+        };
+
+        actionContainer.appendChild(copyBtn);
+        actionContainer.appendChild(musicBtn);
+        actionContainer.appendChild(stopBtn);
+        
+        wrapper.appendChild(card);
+        wrapper.appendChild(actionContainer);
+        canvas.insertBefore(wrapper, canvas.firstChild);
+    }
+</script>
+
+</body>
+</html>
