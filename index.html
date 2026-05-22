@@ -23,7 +23,7 @@
             margin: 0;
             display: flex;
             flex-direction: column;
-            height: 100vh;
+            min-height: 100vh; /* Changed from height: 100vh */
             color: var(--midnight);
         }
 
@@ -54,7 +54,6 @@
             width: 100%;
             box-sizing: border-box;
             flex: 1;
-            overflow: hidden;
         }
 
         .studio-panel {
@@ -68,6 +67,20 @@
             flex-direction: column;
             gap: 1.2rem;
             height: fit-content;
+            transition: all 0.3s ease;
+        }
+
+        /* Mobile-only toggle button */
+        #mobile-toggle {
+            display: none;
+            background: var(--midnight);
+            color: white;
+            border: none;
+            padding: 10px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: bold;
+            margin-bottom: 1rem;
         }
 
         .input-group {
@@ -139,7 +152,6 @@
         }
 
         .canvas {
-            overflow-y: auto;
             padding: 1rem;
             display: flex;
             flex-direction: column;
@@ -192,6 +204,8 @@
         .card-actions {
             display: flex;
             gap: 10px;
+            flex-wrap: wrap;
+            justify-content: center;
         }
 
         .action-btn {
@@ -218,8 +232,23 @@
         }
 
         @media (max-width: 900px) {
-            .app-container { grid-template-columns: 1fr; overflow-y: auto; }
-            .birthday-card { width: 90vw; }
+            .app-container { 
+                grid-template-columns: 1fr; 
+                padding: 1rem;
+            }
+            
+            #mobile-toggle {
+                display: block;
+            }
+
+            .birthday-card { 
+                width: 90vw; 
+            }
+        }
+
+        /* Class to hide form on mobile */
+        .collapsed {
+            display: none;
         }
     </style>
 </head>
@@ -230,41 +259,44 @@
 </header>
 
 <div class="app-container">
-    <aside class="studio-panel">
-        <div class="input-group">
-            <label>Recipient Name</label>
-            <input type="text" id="name" placeholder="e.g. Julianne">
-        </div>
-        <div class="input-group">
-            <label>Age</label>
-            <input type="number" id="age" placeholder="e.g. 30">
-        </div>
-        <div class="input-group">
-            <label>Favorite Hobby</label>
-            <input type="text" id="hobby" placeholder="e.g. oil painting">
-        </div>
-        <div class="input-group">
-            <label>Relationship</label>
-            <select id="relation">
-                <option value="friend">Friend</option>
-                <option value="partner">Partner</option>
-                <option value="parent">Parent</option>
-                <option value="colleague">Colleague</option>
-                <option value="sibling">Sibling</option>
-            </select>
-        </div>
-        <div class="input-group">
-            <label>Mood</label>
-            <select id="tone">
-                <option value="elegant">✨ Elegant</option>
-                <option value="witty">😏 Witty</option>
-                <option value="warm">☀️ Warm</option>
-                <option value="minimal">☁️ Minimal</option>
-            </select>
-        </div>
-        <div class="button-stack">
-            <button class="generate-btn" onclick="composeCard()">Compose Card</button>
-            <button class="lucky-btn" onclick="feelingLucky()">I'm Feeling Lucky 🍀</button>
+    <aside>
+        <button id="mobile-toggle" onclick="toggleForm()">Toggle Form ↕️</button>
+        <div class="studio-panel" id="form-panel">
+            <div class="input-group">
+                <label>Recipient Name</label>
+                <input type="text" id="name" placeholder="e.g. Julianne">
+            </div>
+            <div class="input-group">
+                <label>Age</label>
+                <input type="number" id="age" placeholder="e.g. 30">
+            </div>
+            <div class="input-group">
+                <label>Favorite Hobby</label>
+                <input type="text" id="hobby" placeholder="e.g. oil painting">
+            </div>
+            <div class="input-group">
+                <label>Relationship</label>
+                <select id="relation">
+                    <option value="friend">Friend</option>
+                    <option value="partner">Partner</option>
+                    <option value="parent">Parent</option>
+                    <option value="colleague">Colleague</option>
+                    <option value="sibling">Sibling</option>
+                </select>
+            </div>
+            <div class="input-group">
+                <label>Mood</label>
+                <select id="tone">
+                    <option value="elegant">✨ Elegant</option>
+                    <option value="witty">😏 Witty</option>
+                    <option value="warm">☀️ Warm</option>
+                    <option value="minimal">☁️ Minimal</option>
+                </select>
+            </div>
+            <div class="button-stack">
+                <button class="generate-btn" onclick="composeCard()">Compose Card</button>
+                <button class="lucky-btn" onclick="feelingLucky()">I'm Feeling Lucky 🍀</button>
+            </div>
         </div>
     </aside>
 
@@ -275,174 +307,35 @@
 <script>
     const bdayAudio = new Audio('birthday.mp3'); 
 
+    function toggleForm() {
+        const panel = document.getElementById('form-panel');
+        panel.classList.toggle('collapsed');
+    }
+
     const fragments = {
         elegant: {
-            open: [
-                "Wishing a magnificent birthday to", 
-                "Celebrating the wonderful", 
-                "To the incomparable",
-                "With utmost admiration for",
-                "Wishing a day of serenity and beauty to",
-                "To a truly exceptional soul,",
-                "Celebrating the grace and brilliance of",
-                "My warmest wishes for a splendid day to"
-            ],
-            mid: [
-                "as you embrace your [AGE_ORD] year.", 
-                "on your [AGE_ORD] anniversary of being amazing.", 
-                "reaching the milestone of [AGE_ORD] with such grace.",
-                "as you enter your [AGE_ORD] year of splendor.",
-                "celebrating [AGE] years of timeless beauty.",
-                "marking the [AGE_ORD] year of your wonderful journey.",
-                "on the occasion of your [AGE_ORD] birthday,",
-                "as you celebrate [AGE] years of wisdom and elegance."
-            ],
-            hobby: [
-                "May your year be as vibrant and inspiring as your passion for [HOBBY].", 
-                "I hope this year brings you endless joy and more time for [HOBBY].",
-                "May your days be as rich and fulfilling as your love for [HOBBY].",
-                "I hope this new chapter grants you infinite moments of peace and [HOBBY].",
-                "May the artistry of [HOBBY] continue to bring light to your life.",
-                "Wishing you a year of growth, discovery, and plenty of [HOBBY].",
-                "I hope your passion for [HOBBY] leads you to new and wonderful heights.",
-                "May your heart always find rhythm and joy in [HOBBY]."
-            ],
-            close: [
-                "With deepest affection,", 
-                "Wishing you a year of elegance and joy,",
-                "With timeless respect and love,",
-                "Wishing you an eternal spring,",
-                "Stay radiant and inspired,",
-                "With my sincerest wishes,",
-                "To your continued brilliance,",
-                "Ever yours in admiration,"
-            ]
+            open: ["Wishing a magnificent birthday to", "Celebrating the wonderful", "To the incomparable", "With utmost admiration for", "Wishing a day of serenity and beauty to", "To a truly exceptional soul,", "Celebrating the grace and brilliance of", "My warmest wishes for a splendid day to"],
+            mid: ["as you embrace your [AGE_ORD] year.", "on your [AGE_ORD] anniversary of being amazing.", "reaching the milestone of [AGE_ORD] with such grace.", "as you enter your [AGE_ORD] year of splendor.", "celebrating [AGE] years of timeless beauty.", "marking the [AGE_ORD] year of your wonderful journey.", "on the occasion of your [AGE_ORD] birthday,", "as you celebrate [AGE] years of wisdom and elegance."],
+            hobby: ["May your year be as vibrant and inspiring as your passion for [HOBBY].", "I hope this year brings you endless joy and more time for [HOBBY].", "May your days be as rich and fulfilling as your love for [HOBBY].", "I hope this new chapter grants you infinite moments of peace and [HOBBY].", "May the artistry of [HOBBY] continue to bring light to your life.", "Wishing you a year of growth, discovery, and plenty of [HOBBY].", "I hope your passion for [HOBBY] leads you to new and wonderful heights.", "May your heart always find rhythm and joy in [HOBBY]."],
+            close: ["With deepest affection,", "Wishing you a year of elegance and joy,", "With timeless respect and love,", "Wishing you an eternal spring,", "Stay radiant and inspired,", "With my sincerest wishes,", "To your continued brilliance,", "Ever yours in admiration,"]
         },
         witty: {
-            open: [
-                "HBD to", 
-                "Cheers to", 
-                "Congratulations to",
-                "Happy Birthday to the only person who",
-                "A toast to the legend that is",
-                "Sending a pity party to",
-                "Alert the media! It's the birthday of",
-                "Happy birthday to my favorite headache,"
-            ],
-            mid: [
-                "for surviving [AGE] years of this chaos.", 
-                "on turning [AGE]. You're officially a classic.", 
-                "reaching age [AGE] without a manual.",
-                "for making [AGE] look significantly less terrifying.",
-                "on turning [AGE]—don't worry, you're still not as old as you'll be next year.",
-                "reaching [AGE] without being arrested. Impressive.",
-                "on officially becoming a vintage model at age [AGE].",
-                "surviving [AGE] years of being you. That's the real achievement."
-            ],
-            hobby: [
-                "Now stop [HOBBY]ing for five minutes and eat some cake!", 
-                "I hope you spend your [AGE_ORD] year doing way too much [HOBBY].",
-                "If you spend half as much time [HOBBY]ing as you do complaining about your age, you'll be happy!",
-                "Maybe at [AGE] you'll finally get a trophy for your [HOBBY] skills.",
-                "I'd tell you to take up a new hobby, but [HOBBY] is already weird enough.",
-                "May your [HOBBY] skills improve faster than your hairline recedes.",
-                "Hope your day is filled with cake and an irresponsible amount of [HOBBY].",
-                "I'm only here for the cake, but I'll congratulate your [HOBBY] progress too."
-            ],
-            close: [
-                "Stay legendary,", 
-                "Your favorite person,",
-                "Keep it weird,",
-                "Stay chaotic,",
-                "With moderate affection,",
-                "Don't let the old age win,",
-                "Cheers to the chaos,",
-                "Your benevolent overlord,"
-            ]
+            open: ["HBD to", "Cheers to", "Congratulations to", "Happy Birthday to the only person who", "A toast to the legend that is", "Sending a pity party to", "Alert the media! It's the birthday of", "Happy birthday to my favorite headache,"],
+            mid: ["for surviving [AGE] years of this chaos.", "on turning [AGE]. You're officially a classic.", "reaching age [AGE] without a manual.", "for making [AGE] look significantly less terrifying.", "on turning [AGE]—don't worry, you're still not as old as you'll be next year.", "reaching [AGE] without being arrested. Impressive.", "on officially becoming a vintage model at age [AGE].", "surviving [AGE] years of being you. That's the real achievement."],
+            hobby: ["Now stop [HOBBY]ing for five minutes and eat some cake!", "I hope you spend your [AGE_ORD] year doing way too much [HOBBY].", "If you spend half as much time [HOBBY]ing as you do complaining about your age, you'll be happy!", "Maybe at [AGE] you'll finally get a trophy for your [HOBBY] skills.", "I'd tell you to take up a new hobby, but [HOBBY] is already weird enough.", "May your [HOBBY] skills improve faster than your hairline recedes.", "Hope your day is filled with cake and an irresponsible amount of [HOBBY].", "I'm only here for the cake, but I'll congratulate your [HOBBY] progress too."],
+            close: ["Stay legendary,", "Your favorite person,", "Keep it weird,", "Stay chaotic,", "With moderate affection,", "Don't let the old age win,", "Cheers to the chaos,", "Your benevolent overlord,"]
         },
         warm: {
-            open: [
-                "Happy Birthday, dear", 
-                "Sending so much love to", 
-                "To my wonderful",
-                "To my favorite person in the world,",
-                "My heart is full today celebrating",
-                "Sending a giant hug to",
-                "To the light of my life,",
-                "Wishing the happiest of days to"
-            ],
-            mid: [
-                "on your [AGE_ORD] birthday.", 
-                "as you celebrate [AGE] beautiful years.", 
-                "on turning [AGE] today.",
-                "on your [AGE_ORD] birthday celebration.",
-                "as you turn [AGE] and keep making us smile.",
-                "celebrating [AGE] years of your kind heart.",
-                "as you embark on your [AGE_ORD] year of life.",
-                "on a day that is just as special as you are at [AGE]."
-            ],
-            hobby: [
-                "I love how your eyes light up when you talk about [HOBBY].", 
-                "I hope your day is filled with [HOBBY] and laughter.",
-                "Your passion for [HOBBY] is a joy to witness.",
-                "I can't wait to spend more time [HOBBY]ing with you.",
-                "May your year be filled with the same happiness you find in [HOBBY].",
-                "I hope you get to spend your whole birthday [HOBBY]ing.",
-                "Seeing you enjoy [HOBBY] is my favorite thing in the world.",
-                "Wishing you a day of pure relaxation and plenty of [HOBBY]."
-            ],
-            close: [
-                "With all my love,", 
-                "Always thinking of you,",
-                "All my love, always,",
-                "Forever your biggest fan,",
-                "With a heart full of love,",
-                "Wishing you the world,",
-                "Love you to the moon and back,",
-                "Yours forever,"
-            ]
+            open: ["Happy Birthday, dear", "Sending so much love to", "To my wonderful", "To my favorite person in the world,", "My heart is full today celebrating", "Sending a giant hug to", "To the light of my life,", "Wishing the happiest of days to"],
+            mid: ["on your [AGE_ORD] birthday.", "as you celebrate [AGE] beautiful years.", "on turning [AGE] today.", "on your [AGE_ORD] birthday celebration.", "as you turn [AGE] and keep making us smile.", "celebrating [AGE] years of your kind heart.", "as you embark on your [AGE_ORD] year of life.", "on a day that is just as special as you are at [AGE]."],
+            hobby: ["I love how your eyes light up when you talk about [HOBBY].", "I hope your day is filled with [HOBBY] and laughter.", "Your passion for [HOBBY] is a joy to witness.", "I can't wait to spend more time [HOBBY]ing with you.", "May your year be filled with the same happiness you find in [HOBBY].", "I hope you get to spend your whole birthday [HOBBY]ing.", "Seeing you enjoy [HOBBY] is my favorite thing in the world.", "Wishing you a day of pure relaxation and plenty of [HOBBY]."],
+            close: ["With all my love,", "Always thinking of you,", "All my love, always,", "Forever your biggest fan,", "With a heart full of love,", "Wishing you the world,", "Love you to the moon and back,", "Yours forever,"]
         },
         minimal: {
-            open: [
-                "Happy Birthday", 
-                "Cheers to", 
-                "Best wishes",
-                "HBD",
-                "Warmest wishes",
-                "Salutations",
-                "Joyous day",
-                "Congrats"
-            ],
-            mid: [
-                "[NAME], [AGE].", 
-                "[NAME]. Happy [AGE_ORD].", 
-                "[NAME], cheers to [AGE]!",
-                "To [AGE] more.",
-                "Happy [AGE_ORD]!",
-                "[NAME], [AGE] years strong.",
-                "Celebrating [AGE].",
-                "A toast to [AGE]."
-            ],
-            hobby: [
-                `Enjoy the [HOBBY].`, 
-                `More [HOBBY] this year.`,
-                `Keep [HOBBY]ing.`,
-                `Best of luck with [HOBBY].`,
-                `To more [HOBBY].`,
-                `Enjoy your [HOBBY] time.`,
-                `More [HOBBY] soon.`,
-                `[HOBBY] on.`
-            ],
-            close: [
-                "Best,", 
-                "Cheers,",
-                "Sincerely,",
-                "Warmly,",
-                "Regards,",
-                "Peace,",
-                "Take care,",
-                "Later,"
-            ]
+            open: ["Happy Birthday", "Cheers to", "Best wishes", "HBD", "Warmest wishes", "Salutations", "Joyous day", "Congrats"],
+            mid: ["[NAME], [AGE].", "[NAME]. Happy [AGE_ORD].", "[NAME], cheers to [AGE]!", "To [AGE] more.", "Happy [AGE_ORD]!", "[NAME], [AGE] years strong.", "Celebrating [AGE].", "A toast to [AGE]."],
+            hobby: [`Enjoy the [HOBBY].`, `More [HOBBY] this year.`, `Keep [HOBBY]ing.`, `Best of luck with [HOBBY].`, `To more [HOBBY].`, `Enjoy your [HOBBY] time.`, `More [HOBBY] soon.`, `[HOBBY] on.`],
+            close: ["Best,", "Cheers,", "Sincerely,", "Warmly,", "Regards,", "Peace,", "Take care,", "Later,"]
         }
     };
 
@@ -489,6 +382,11 @@
                          .replace(/\[HOBBY\]/g, hobby);
 
         renderCard(message);
+
+        // On mobile, automatically collapse the form after generating to show the card
+        if(window.innerWidth < 900) {
+            document.getElementById('form-panel').classList.add('collapsed');
+        }
     }
 
     function renderCard(text) {
@@ -518,7 +416,6 @@
         musicBtn.onclick = () => {
             bdayAudio.currentTime = 0;
             bdayAudio.play().catch(error => {
-                console.error("Audio Error:", error);
                 alert("🎵 Music file not found! Please make sure 'birthday.mp3' is in your folder.");
             });
         };
