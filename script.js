@@ -90,16 +90,56 @@ function generateReport() {
     // =====================================
 
     const newsHeadline = pick([
+        `${name} Causes Widespread Confusion`,
         "Authorities Baffled",
         "Scientists Demand Answers",
         "Experts Deeply Concerned",
         "Neighborhood In Shock",
+        `${name} At Center Of Growing Controversy`,
         "International Incident Declared",
         "Situation Escalates Rapidly",
         "Government Issues Statement",
         "Local Residents Confused",
+        `${name} Denies All Allegations`,
         "Emergency Meeting Scheduled",
-        "United Nations Monitoring Situation"
+        "United Nations Monitoring Situation",
+        "Investigation Officially Underway",
+        "Unexpected Turn Of Events Reported",
+        `${name} Accidentally Makes History`,
+        "Experts Call Situation 'Highly Unusual'",
+        "Town Council Requests Clarification",
+        "Breaking: Nobody Saw This Coming",
+        "Citizens Demand Answers",
+        `${name} Declared Local Legend`,
+        "Authorities Urge Calm",
+        "Researchers Publish Startling Findings",
+        "Community Divided By Recent Developments",
+        "Emergency Snack Summit Convened",
+        `${name} Sparks International Debate`,
+        "Historic Levels Of Confusion Reached",
+        "Unexpected Hero Emerges",
+        "International Observers Taking Notes",
+        "Local Incident Gains National Attention",
+        `${name} Becomes Unexpected Celebrity`,
+        "Officials Refuse To Rule Anything Out",
+        "Situation Developing Faster Than Expected",
+        "Public Reaction Mixed",
+        "Questions Continue To Mount",
+        `${name} Linked To Ongoing Investigation`,
+        "Experts Remain Deeply Puzzled",
+        "Rare Event Captured On Camera",
+        "New Records Set Overnight",
+        "Authorities Reevaluate Everything",
+        `${name} Surprises Experts Again`,
+        "Confusion Spreads Across Multiple Departments",
+        "Several Meetings Scheduled Immediately",
+        "Unexpected Consequences Continue",
+        "Citizens React With Cautious Optimism",
+        `${name} Reportedly Has A Plan`,
+        "Researchers Request Additional Funding",
+        "New Details Emerge Hourly",
+        "Analysts Struggle To Explain Events",
+        "Nobody Is Quite Sure What Happened"
     ]);
 
     const newsOpenings = [
@@ -109,7 +149,17 @@ function generateReport() {
         "Reporters rushed to the scene when",
         "Local authorities became concerned after",
         "The situation escalated unexpectedly when",
-        "Witnesses immediately called the news when"
+        "Witnesses immediately called the news when",
+        "City officials held an emergency press conference after",
+        "Concern spread rapidly throughout the community when",
+        "A routine afternoon became historic when",
+        "Traffic briefly stopped after",
+        "Eyewitnesses began recording videos when",
+        "The annual town meeting was interrupted after",
+        "Local businesses reported unusual activity when",
+        "An otherwise peaceful day changed dramatically when",
+        "Multiple experts were consulted after",
+        "A chain of unexpected events began when"
     ];
 
     const newsEvents = [
@@ -122,7 +172,17 @@ function generateReport() {
         `${name} achieved minor celebrity status through excessive use of ${food}.`,
         `${name} attempted to solve local problems using only ${food}.`,
         `${name} accidentally inspired a documentary series.`,
-        `${name} was named Person of the Week by a confused committee.`
+        `${name} was named Person of the Week by a confused committee.`,
+        `${name} attempted to negotiate peace between rival snack factions.`,
+        `${name} launched an ambitious plan involving ${food} and optimism.`,
+        `${name} accidentally became a social media influencer overnight.`,
+        `${name} organized a gathering dedicated entirely to ${hobby}.`,
+        `${name} introduced a new theory that confused everyone equally.`,
+        `${name} was nominated for an award nobody remembers creating.`,
+        `${name} began offering unsolicited advice with alarming confidence.`,
+        `${name} inspired a surprisingly successful movement centered on ${food}.`,
+        `${name} challenged conventional wisdom during a ${hobby} demonstration.`,
+        `${name} accidentally created a holiday in honor of ${food}.`
     ];
 
     const newsConsequences = [
@@ -133,7 +193,17 @@ function generateReport() {
         "Three podcasts have already covered the incident.",
         "Nobody can agree on what actually happened.",
         "Local pigeons appear supportive.",
-        "Social media remains divided."
+        "Social media remains divided.",
+        "The mayor declined to comment.",
+        "Several experts immediately retired.",
+        "A documentary crew arrived within hours.",
+        "Insurance companies are reviewing the situation.",
+        "Nobody has successfully explained the incident.",
+        "Local schools have added it to their curriculum.",
+        "Merchandise is already being sold online.",
+        "Public interest remains unusually high.",
+        "At least one statue has been proposed.",
+        "The event has become a recurring topic at family dinners."
     ];
 
     const witnessQuote = pick([
@@ -144,7 +214,17 @@ function generateReport() {
         "\"Several pigeons appeared to approve.\"",
         "\"Nobody was prepared for this level of commitment.\"",
         "\"Experts remain cautiously confused.\"",
-        "\"The paperwork alone may take years.\""
+        "\"The paperwork alone may take years.\"",
+        "\"At first we thought it was a joke.\"",
+        "\"I have more questions than answers.\"",
+        "\"Honestly, this explains a lot.\"",
+        "\"We've updated our emergency procedures.\"",
+        "\"The pigeons definitely knew something.\"",
+        "\"My expectations were low, yet here we are.\"",
+        "\"Nobody trained us for this.\"",
+        "\"The situation remains strangely inspiring.\"",
+        "\"I was hoping someone else would explain it.\"",
+        "\"It's surprisingly well organized.\""
     ]);
 
     // =====================================
@@ -161,7 +241,17 @@ function generateReport() {
         `Creative interpretation of workplace rules`,
         `Shows remarkable persistence`,
         `Excellent emergency improvisation`,
-        `Keeps morale high despite the facts`
+        `Keeps morale high despite the facts`,
+        `Maintains composure during completely avoidable crises`,
+        `Demonstrates strong leadership in snack-related matters`,
+        `Possesses remarkable confidence under scrutiny`,
+        `Can motivate others despite limited preparation`,
+        `Adapts quickly to unexpected opportunities`,
+        `Displays consistent enthusiasm for innovation`,
+        `Maintains productivity during unusual circumstances`,
+        `Shows excellent commitment to team morale`,
+        `Finds creative solutions nobody requested`,
+        `Demonstrates impressive dedication to personal branding`
     ];
 
     const weaknesses = [
@@ -174,7 +264,17 @@ function generateReport() {
         `Occasionally invents unnecessary procedures`,
         `May overestimate personal expertise`,
         `Uses dramatic narration during routine tasks`,
-        `Shows questionable judgment around ${food}`
+        `Shows questionable judgment around ${food}`,
+        `May become overly enthusiastic about ${food}`,
+        `Occasionally confuses confidence with expertise`,
+        `Frequently creates unnecessary excitement`,
+        `Has difficulty ignoring interesting distractions`,
+        `May escalate situations unnecessarily`,
+        `Treats brainstorming sessions as competitive sports`,
+        `Sometimes volunteers for questionable projects`,
+        `Has an unhealthy level of curiosity`,
+        `Occasionally misunderstands simple instructions`,
+        `Can become emotionally invested in trivial matters`
     ];
 
     const selectedStrengths = pickUnique(strengths, 3);
@@ -191,7 +291,17 @@ function generateReport() {
         `Hi. I'm ${name}, and this is probably a mistake.`,
         `Nice to meet you.`,
         `Let's skip the small talk and discuss snacks.`,
-        `I was told to write something impressive.`
+        `I was told to write something impressive.`,
+        `I asked AI to write this for me.`,
+        `I've been described as an acquired taste.`,
+        `Welcome to my entirely reasonable dating profile.`,
+        `Against my better judgment, here we are.`,
+        `Let's pretend this is charming.`,
+        `I enjoy long walks away from responsibility.`,
+        `I was promised there would be snacks.`,
+        `This profile contains at least three facts.`,
+        `I've prepared for this moment poorly.`,
+        `You seem nice enough to continue reading.`
     ]);
 
     const datingMiddle = pick([
@@ -201,7 +311,17 @@ function generateReport() {
         `People often ask why I enjoy ${hobby}. I change the subject.`,
         `I bring a unique blend of confidence and questionable judgment.`,
         `I've dedicated years to mastering the art of ${hobby}.`,
-        `I once considered turning ${hobby} into a career.`
+        `I once considered turning ${hobby} into a career.`,
+        `Most of my free time revolves around ${hobby}.`,
+        `My relationship with ${food} has been described as serious.`,
+        `I once spent an entire weekend focused on ${hobby}.`,
+        `Friends regularly ask me for advice they should ignore.`,
+        `I enjoy ambitious plans and questionable execution.`,
+        `My hobbies include ${hobby} and avoiding accountability.`,
+        `I consider myself an expert in at least one made-up field.`,
+        `I have strong opinions about things that don't matter.`,
+        `My life can best be described as improvisation.`,
+        `I bring enthusiasm to situations that don't require it.`
     ]);
 
     const datingClosing = pick([
@@ -211,7 +331,17 @@ function generateReport() {
         `If you can explain my life choices, please contact me.`,
         `Bonus points if you also enjoy chaos.`,
         `Applications are currently being accepted.`,
-        `References available upon request.`
+        `References available upon request.`,
+        `Must appreciate both adventure and snacks.`,
+        `If you own a cape, that's a bonus.`,
+        `No experience required.`,
+        `Let's make questionable memories together.`,
+        `Side effects may include laughter.`,
+        `Must be comfortable with occasional chaos.`,
+        `Applicants should enjoy unexpected plot twists.`,
+        `References available from confused acquaintances.`,
+        `Please bring your own snacks.`,
+        `Let's see what happens.`
     ]);
 
     // =====================================
@@ -228,7 +358,17 @@ function generateReport() {
         `telepathic communication with pigeons`,
         `the power of dramatic entrances`,
         `advanced snack detection`,
-        `unreasonable confidence`
+        `unreasonable confidence`,
+        `the power to predict snack shortages`,
+        `instant mastery of awkward situations`,
+        `limited control over probability`,
+        `the ability to summon motivational speeches`,
+        `superhuman persistence`,
+        `advanced bureaucracy resistance`,
+        `the ability to detect free food`,
+        `mildly inconvenient telekinesis`,
+        `the power to attract strange adventures`,
+        `extreme luck during unimportant events`
     ]);
 
     const superheroWeaknesses = [
@@ -237,7 +377,17 @@ function generateReport() {
         `strongly worded emails`,
         `small ducks`,
         `office meetings`,
-        `their own overconfidence`
+        `their own overconfidence`,
+        `slow internet`,
+        `unexpected paperwork`,
+        `folding fitted sheets`,
+        `expired coupons`,
+        `awkward eye contact`,
+        `minor inconveniences`,
+        `weekend obligations`,
+        `poor parking decisions`,
+        `group projects`,
+        `their own success`
     ];
 
     // =====================================
@@ -250,7 +400,17 @@ function generateReport() {
         `nobody specifically told me not to`,
         `it seemed like a good idea at the time`,
         `the pigeons approved`,
-        `I misunderstood the assignment`
+        `I misunderstood the assignment`,
+        `the evidence lacks sufficient snacks`,
+        `nobody objected at the time`,
+        `I was following my instincts`,
+        `the situation was taken out of context`,
+        `everybody seemed supportive`,
+        `it was part of a larger strategy`,
+        `I was acting in the public interest`,
+        `the instructions were unclear`,
+        `history will vindicate me`,
+        `it was an honest misunderstanding`
     ]);
 
     const courtroomEvidence = [
@@ -259,7 +419,17 @@ function generateReport() {
         `four confused witnesses`,
         `an unexplained receipt`,
         `a pigeon that refused to testify`,
-        `a series of unfortunate photographs`
+        `a series of unfortunate photographs`,
+        `an unusually detailed flowchart`,
+        `a collection of mysterious notes`,
+        `a half-finished presentation`,
+        `multiple eyewitness sketches`,
+        `a suspiciously enthusiastic recommendation letter`,
+        `several unopened emails`,
+        `an alarming amount of sticky notes`,
+        `a commemorative plaque`,
+        `an unauthorized mission statement`,
+        `a trophy of unclear origin`
     ];
 
     // =====================================
@@ -272,7 +442,17 @@ function generateReport() {
         `subject appears harmless but unpredictable`,
         `subject possesses advanced snack acquisition skills`,
         `subject demonstrates confidence unsupported by evidence`,
-        `subject may be attempting leadership`
+        `subject may be attempting leadership`,
+        `subject exhibits unusual optimism`,
+        `subject frequently initiates unnecessary adventures`,
+        `subject appears highly adaptable`,
+        `subject has formed alliances with other humans`,
+        `subject displays persistent curiosity`,
+        `subject enjoys unnecessary complexity`,
+        `subject values snacks above expectations`,
+        `subject demonstrates unusual resilience`,
+        `subject seems unaware of personal limitations`,
+        `subject may accidentally become influential`
     ]);
 
     const alienRecommendations = [
@@ -281,7 +461,17 @@ function generateReport() {
         `Offer snacks and observe reaction.`,
         `Avoid discussing taxes.`,
         `Further study required.`,
-        `Subject may be important to local customs.`
+        `Subject may be important to local customs.`,
+        `Recommend diplomatic engagement.`,
+        `Further snack-based testing advised.`,
+        `Monitor for unexpected leadership activity.`,
+        `Avoid direct competition.`,
+        `Subject appears valuable to the local ecosystem.`,
+        `Maintain safe observation distance.`,
+        `Additional cultural analysis required.`,
+        `Assign senior researchers to the case.`,
+        `Continue collecting data.`,
+        `Probability of future incidents remains high.`
     ];
 
     // =====================================
