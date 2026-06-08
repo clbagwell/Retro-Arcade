@@ -167,3 +167,34 @@ button:hover {
             0 0 10px rgba(244,162,97,.5);
     }
 }
+
+.d20badge {
+
+    display: inline-block;
+
+    width: 28px;
+    height: 28px;
+
+    line-height: 28px;
+
+    text-align: center;
+
+    font-size: 12px;
+    font-weight: bold;
+
+    color: white;
+
+    background: #4F7CAC;
+
+    border: 2px solid #264653;
+
+    clip-path: polygon(
+        50% 0%,
+        95% 35%,
+        78% 90%,
+        22% 90%,
+        5% 35%
+    );
+
+    margin-right: 8px;
+}
