@@ -434,9 +434,93 @@ function generateReport() {
     // SUPERHERO
     // =====================================
 
-    const heroName =
-        pick(["Captain", "Professor", "Doctor", "Mega", "Ultra", "Mystery"])
-        + " " + food;
+    const heroPrefixes = [
+        "Captain",
+        "Professor",
+        "Doctor",
+        "Mega",
+        "Ultra",
+        "Mystery",
+        "Shadow",
+        "Cosmic",
+        "Quantum",
+        "Thunder",
+        "Iron",
+        "Crimson",
+        "Titan",
+        "Phantom",
+        "Turbo",
+        "Supreme",
+        "Atomic",
+        "Midnight",
+        "Legendary",
+        "Galactic"
+    ];
+    
+    const heroSuffixes = [
+        "Crusher",
+        "Defender",
+        "Guardian",
+        "Avenger",
+        "Phantom",
+        "Sentinel",
+        "Champion",
+        "Protector",
+        "Warden",
+        "Ranger",
+        "Vindicator",
+        "Crusader",
+        "Invoker",
+        "Enforcer",
+        "Trailblazer",
+        "Stormbringer",
+        "Pathfinder",
+        "Outrider",
+        "Lightbearer",
+        "Nightwatch"
+    ];
+
+    const heroDescriptors = [
+        "of Justice",
+        "of Destiny",
+        "of Infinite Snacks",
+        "of the Sacred Taco",
+        "of Mild Inconvenience",
+        "of Unlimited Mondays",
+        "of Questionable Decisions",
+        "of the Ancient Nachos",
+        "of Maximum Effort",
+        "of Unnecessary Heroics",
+        "of the Lost Coupon",
+        "of Dramatic Entrances",
+        "of Legendary Appetite",
+        "of Suspicious Timing",
+        "of the Cosmic Burrito"
+    ];
+    
+    let heroName =
+        pick(heroPrefixes) +
+        " " +
+        pick(heroSuffixes);
+    
+    if (Math.random() < 0.15) {
+    
+        heroName +=
+            " " +
+            pick(heroDescriptors);
+    
+        // 3% chance for legendary title
+    
+        if (Math.random() < 0.03) {
+    
+            heroName +=
+                ", First Of Their Name";
+        }
+    }
+    
+    //const heroName =
+    //    pick(["Captain", "Professor", "Doctor", "Mega", "Ultra", "Mystery"])
+    //    + " " + food;
 
     const superPower = pick([
         `the ability to summon unlimited ${food}`,
@@ -523,22 +607,22 @@ function generateReport() {
     // =====================================
 
     const alienObservation = pick([
-        `subject displays unusual attachment to ${food}`,
-        `subject frequently discusses ${hobby}`,
-        `subject appears harmless but unpredictable`,
-        `subject possesses advanced snack acquisition skills`,
-        `subject demonstrates confidence unsupported by evidence`,
-        `subject may be attempting leadership`,
-        `subject exhibits unusual optimism`,
-        `subject frequently initiates unnecessary adventures`,
-        `subject appears highly adaptable`,
-        `subject has formed alliances with other humans`,
-        `subject displays persistent curiosity`,
-        `subject enjoys unnecessary complexity`,
-        `subject values snacks above expectations`,
-        `subject demonstrates unusual resilience`,
-        `subject seems unaware of personal limitations`,
-        `subject may accidentally become influential`
+        `Subject displays unusual attachment to ${food}.`,
+        `Subject frequently discusses ${hobby}.`,
+        `Subject appears harmless but unpredictable.`,
+        `Subject possesses advanced snack acquisition skills.`,
+        `Subject demonstrates confidence unsupported by evidence.`,
+        `Subject may be attempting leadership.`,
+        `Subject exhibits unusual optimism.`,
+        `Subject frequently initiates unnecessary adventures.`,
+        `Subject appears highly adaptable.`,
+        `Subject has formed alliances with other humans.`,
+        `Subject displays persistent curiosity.`,
+        `Subject enjoys unnecessary complexity.`,
+        `Subject values snacks above expectations.`,
+        `Subject demonstrates unusual resilience.`,
+        `Subject seems unaware of personal limitations.`,
+        `Subject may accidentally become influential.`
     ]);
 
     const alienRecommendations = [
