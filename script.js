@@ -44,7 +44,17 @@ function generateReport() {
         "assembled from leftover internet comments",
         "constructed entirely from snack-related data",
         "created during a software malfunction",
-        "summoned by an overworked AI"
+        "summoned by an overworked AI",
+        "discovered inside a forgotten spreadsheet tab",
+        "assembled from rejected superhero applications",
+        "accidentally printed by an experimental office printer",
+        "created during a heated debate about tacos",
+        "generated from the combined hopes of several confused interns",
+        "reconstructed from fragments of ancient snack lore",
+        "summoned by a malfunctioning vending machine",
+        "compiled from decades of questionable decisions",
+        "extracted from a parallel universe's employee database",
+        "found wandering unsupervised through the internet"
     ];
     
     const nameDefaults = [
@@ -665,14 +675,14 @@ function generateReport() {
             </p>
 
             <p>
+                Emergency personality generation protocol activated.
+            </p>
+    
+            <p>
                 Subject was originally
                 ${pick(randomOrigins)}.
             </p>
 
-            <p>
-                Emergency personality generation protocol activated.
-            </p>
-    
             <p>
                 A completely synthetic citizen has been created:
                 <strong>${name}</strong>,
