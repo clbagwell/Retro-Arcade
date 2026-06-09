@@ -485,6 +485,22 @@ function generateReport() {
     // DATING PROFILE
     // =====================================
 
+    const datingRoll = Math.random();
+
+    let datingTemplate;
+    
+    if (datingRoll < 0.05) {
+    
+        datingTemplate = 99;
+    
+    } else {
+    
+        datingTemplate =
+            Math.floor(Math.random() * 6);
+    }
+    
+    let datingHtml = "";
+    
     const datingOpening = pick([
         `Hello, I'm ${name}.`,
         `Greetings, future adventure partner.`,
@@ -545,6 +561,191 @@ function generateReport() {
         `Let's see what happens.`
     ]);
 
+    if (datingTemplate === 0) {
+
+        datingHtml = `
+            <h2>❤️ DATING PROFILE</h2>
+    
+            <p>${datingOpening}</p>
+    
+            <p>${datingMiddle}</p>
+    
+            <p>${datingClosing}</p>
+        `;
+    }
+
+    if (datingTemplate === 1) {
+
+        datingHtml = `
+            <h2>🚩 RED FLAG ANALYSIS</h2>
+    
+            <p>
+                Subject:
+                ${name}
+            </p>
+    
+            <p>
+                Occupation:
+                ${occupation}
+            </p>
+    
+            <p>
+                Relationship with ${food}:
+                Concerning
+            </p>
+    
+            <p>
+                Obsession with ${hobby}:
+                Documented
+            </p>
+    
+            <p>
+                Overall Red Flag Score:
+                ${randomScore()}%
+            </p>
+        `;
+    }
+
+    if (datingTemplate === 2) {
+
+        datingHtml = `
+            <h2>📦 PRODUCT REVIEW</h2>
+    
+            <p>
+                Product:
+                ${name}
+            </p>
+    
+            <p>
+                Rating:
+                ⭐⭐⭐⭐☆
+            </p>
+    
+            <p>
+                Pros:
+                Enjoys ${food}
+            </p>
+    
+            <p>
+                Cons:
+                Won't stop talking about ${hobby}
+            </p>
+    
+            <p>
+                Would date again.
+            </p>
+        `;
+    }
+
+    if (datingTemplate === 3) {
+
+        datingHtml = `
+            <h2>🕵️ FBI BEHAVIORAL PROFILE</h2>
+    
+            <p>
+                Subject:
+                ${name}
+            </p>
+    
+            <p>
+                Known Activities:
+                ${hobby}
+            </p>
+    
+            <p>
+                Primary Motivation:
+                Access to ${food}
+            </p>
+    
+            <p>
+                Threat Level:
+                Mildly Charming
+            </p>
+    
+            <p>
+                Recommended Action:
+                Observe from a safe distance.
+            </p>
+        `;
+    }
+
+    if (datingTemplate === 4) {
+
+        datingHtml = `
+            <h2>💼 LINKEDIN CONNECTION REQUEST</h2>
+    
+            <p>
+                Hi,
+                I'd like to add you to my professional network.
+            </p>
+    
+            <p>
+                I see you also enjoy
+                ${hobby}.
+            </p>
+    
+            <p>
+                Perhaps together we can
+                revolutionize ${food}.
+            </p>
+    
+            <p>
+                Looking forward to connecting.
+            </p>
+        `;
+    }
+
+    if (datingTemplate === 5) {
+
+        datingHtml = `
+            <h2>📺 REALITY TV CONTESTANT</h2>
+    
+            <p>
+                Meet ${name},
+                a ${occupation}.
+            </p>
+    
+            <p>
+                Their strategy is simple:
+                rely on confidence and
+                large quantities of ${food}.
+            </p>
+    
+            <p>
+                When not competing,
+                they enjoy ${hobby}.
+            </p>
+    
+            <p>
+                Odds of winning:
+                Surprisingly High
+            </p>
+        `;
+    }
+
+    if (datingTemplate === 99) {
+
+        datingHtml = `
+            <h2>🏆 PERFECT MATCH DETECTED</h2>
+    
+            <p>
+                Congratulations.
+            </p>
+    
+            <p>
+                After reviewing all available data,
+                our systems have determined that
+                ${name}
+                is statistically compatible with
+                absolutely everyone.
+            </p>
+    
+            <p>
+                This result should not be trusted.
+            </p>
+        `;
+    }
+    
     // =====================================
     // SUPERHERO
     // =====================================
@@ -632,10 +833,6 @@ function generateReport() {
                 ", First Of Their Name";
         }
     }
-    
-    //const heroName =
-    //    pick(["Captain", "Professor", "Doctor", "Mega", "Ultra", "Mystery"])
-    //    + " " + food;
 
     const superPower = pick([
         `the ability to summon unlimited ${food}`,
@@ -1032,11 +1229,7 @@ function generateReport() {
         </div>
 
         <div class="card">
-            <h2>❤️ DATING PROFILE</h2>
-
-            <p>${datingOpening}</p>
-            <p>${datingMiddle}</p>
-            <p>${datingClosing}</p>
+            ${datingHtml}
         </div>
 
         <div class="card">
