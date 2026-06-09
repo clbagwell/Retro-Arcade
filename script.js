@@ -21,6 +21,28 @@ function randomScore() {
 
 function generateReport() {
 
+    const today = new Date();
+
+    const currentYear =
+        today.getFullYear();
+    
+    const nextYear =
+        currentYear + 1;
+
+    const fiveYearsFromNow =
+        currentYear + 5;
+    
+    const currentDate =
+        today.toLocaleDateString(
+            "en-US",
+            {
+                weekday: "long",
+                year: "numeric",
+                month: "long",
+                day: "numeric"
+            }
+        );
+    
     const rawName =
     document.getElementById("name").value.trim();
 
@@ -417,7 +439,7 @@ function generateReport() {
             <h2>🏛 HISTORICAL RECORD</h2>
     
             <p>
-                In the year 2026,
+                In the year ${currentYear},
                 ${name} attempted
                 ${hobby}.
             </p>
@@ -432,6 +454,11 @@ function generateReport() {
     // PERFORMANCE REVIEW
     // =====================================
 
+    const reviewTemplate =
+        Math.floor(Math.random() * 8);
+    
+    let reviewHtml = "";
+    
     const strengths = [
         `Exceptional dedication to ${food}`,
         `Advanced ${hobby} capabilities`,
@@ -481,6 +508,296 @@ function generateReport() {
     const selectedStrengths = pickUnique(strengths, 3);
     const selectedWeaknesses = pickUnique(weaknesses, 3);
 
+    const reviewRoll = Math.random();
+
+    let reviewTemplate;
+    
+    if (reviewRoll < 0.02) {
+    
+        reviewTemplate = 99;
+    
+    } else {
+    
+        reviewTemplate =
+            Math.floor(Math.random() * 8);
+    }
+    
+    if (reviewTemplate === 0) {  //Traditional Performance Review
+
+        reviewHtml = `
+            <h2>🤖 AI PERFORMANCE REVIEW</h2>
+    
+            <p><strong>Employee:</strong> ${name}</p>
+    
+            <h4>Strengths</h4>
+    
+            <ul>
+                <li>${selectedStrengths[0]}</li>
+                <li>${selectedStrengths[1]}</li>
+                <li>${selectedStrengths[2]}</li>
+            </ul>
+    
+            <h4>Areas For Improvement</h4>
+    
+            <ul>
+                <li>${selectedWeaknesses[0]}</li>
+                <li>${selectedWeaknesses[1]}</li>
+                <li>${selectedWeaknesses[2]}</li>
+            </ul>
+    
+            <p>
+                Overall Rating:
+                ${pick([
+                    "Exceeds Expectations",
+                    "Technically Employed",
+                    "A Mystery To Management",
+                    "Needs Adult Supervision",
+                    "Unexpectedly Effective"
+                ])}
+            </p>
+        `;
+    }
+
+    if (reviewTemplate === 1) {  //Report Card
+
+        reviewHtml = `
+            <h2>🎓 REPORT CARD</h2>
+    
+            <p>Student: ${name}</p>
+    
+            <p>Snack Management: A+</p>
+    
+            <p>Decision Making: C-</p>
+    
+            <p>${hobby}: B+</p>
+    
+            <p>Professionalism: ${pick(["A", "B", "C", "D"])}</p>
+    
+            <p>
+                Teacher Comment:
+                Shows potential but remains unpredictable.
+            </p>
+        `;
+    }
+
+    if (reviewTemplate === 2) {  //AI Evaluation Matrix
+
+        reviewHtml = `
+            <h2>🤖 AI EVALUATION MATRIX</h2>
+    
+            <p>
+                Subject:
+                ${name}
+            </p>
+    
+            <p>
+                Productivity:
+                ${randomScore()}%
+            </p>
+    
+            <p>
+                Reliability:
+                ${randomScore()}%
+            </p>
+    
+            <p>
+                Snack Dependency:
+                ${randomScore()}%
+            </p>
+    
+            <p>
+                Recommendation:
+                Continue Monitoring.
+            </p>
+        `;
+    }
+
+    if (reviewTemplate === 3) {  //Fantasy Guild Assessment
+
+        reviewHtml = `
+            <h2>⚔️ GUILD MEMBERSHIP REVIEW</h2>
+    
+            <p>
+                Adventurer:
+                ${name}
+            </p>
+    
+            <p>
+                Class:
+                ${occupation}
+            </p>
+    
+            <p>
+                Special Skill:
+                ${hobby}
+            </p>
+    
+            <p>
+                Loot Recovery Rating:
+                ${randomScore()}%
+            </p>
+    
+            <p>
+                Guild Standing:
+                Honorable Chaos Agent
+            </p>
+        `;
+    }
+
+    if (reviewTemplate === 4) {  //Military Evaluation
+
+        reviewHtml = `
+            <h2>🎖 OFFICIAL SERVICE REVIEW</h2>
+    
+            <p>
+                Personnel:
+                ${name}
+            </p>
+    
+            <p>
+                Tactical Awareness:
+                ${randomScore()}%
+            </p>
+    
+            <p>
+                Mission Focus:
+                ${randomScore()}%
+            </p>
+    
+            <p>
+                Ability To Follow Instructions:
+                ${randomScore()}%
+            </p>
+    
+            <p>
+                Command Notes:
+                Keep away from ${food}.
+            </p>
+        `;
+    }
+
+    if (reviewTemplate === 5) {  //Sports Scouting Report
+
+        reviewHtml = `
+            <h2>🏆 SCOUTING REPORT</h2>
+    
+            <p>
+                Prospect:
+                ${name}
+            </p>
+    
+            <p>
+                Speed: ${randomScore()}
+            </p>
+    
+            <p>
+                Agility: ${randomScore()}
+            </p>
+    
+            <p>
+                Coachability: ${randomScore()}
+            </p>
+    
+            <p>
+                Potential:
+                Hall Of Fame Chaos Candidate
+            </p>
+        `;
+    }
+
+    if (reviewTemplate === 6) {  //Video (RPG) Game Character Sheet
+
+        reviewHtml = `
+            <h2>🎮 CHARACTER SHEET</h2>
+    
+            <p>
+                Name:
+                ${name}
+            </p>
+    
+            <p>
+                Strength:
+                ${randomScore()}
+            </p>
+    
+            <p>
+                Intelligence:
+                ${randomScore()}
+            </p>
+    
+            <p>
+                Luck:
+                ${randomScore()}
+            </p>
+    
+            <p>
+                Special Ability:
+                ${food} Mastery
+            </p>
+        `;
+    }
+
+    if (reviewTemplate === 7) {  //Corporate HR Incident Report
+
+        reviewHtml = `
+            <h2>📋 HR INCIDENT REPORT</h2>
+    
+            <p>
+                Employee:
+                ${name}
+            </p>
+    
+            <p>
+                Incident Summary:
+                Attempted to improve workplace culture
+                using ${food}.
+            </p>
+    
+            <p>
+                Outcome:
+                Mixed Results.
+            </p>
+    
+            <p>
+                Follow-Up Action:
+                Additional supervision recommended.
+            </p>
+    
+            <p>
+                Employee Response:
+                "I'd do it again."
+            </p>
+        `;
+    }
+
+    if (reviewTemplate === 99) {  //Rare Secret Performance Review Template
+
+        reviewHtml = `
+            <h2>👑 EMPLOYEE OF THE MULTIVERSE</h2>
+    
+            <p>
+                Congratulations, ${name}.
+            </p>
+    
+            <p>
+                After reviewing every known timeline,
+                every alternate reality,
+                and seventeen parallel dimensions,
+                you have been selected as
+                Employee Of The Multiverse.
+            </p>
+    
+            <p>
+                Achievement unlocked.
+            </p>
+    
+            <p>
+                Reward:
+                One free ${food}.
+            </p>
+        `;
+    }
+    
     // =====================================
     // DATING PROFILE
     // =====================================
@@ -1174,58 +1491,12 @@ function generateReport() {
 
         <div class="card">
             ${breakingNewsHtml}
-            <!-- <h2>🚨 BREAKING NEWS</h2> 
-
-            <h3>${newsHeadline}</h3>
-
-            <p>
-                ${pick(newsOpenings)}
-                ${name}, a local ${occupation},
-                was observed using ${food}
-                while participating in ${hobby}.
-            </p>
-
-            <p>${pick(newsEvents)}</p>
-
-            <p>${pick(newsConsequences)}</p>
-
-            <p>${witnessQuote}</p>
-            -->
         </div>
 
         ${specialCard}
 
         <div class="card">
-            <h2>🤖 AI PERFORMANCE REVIEW</h2>
-
-            <p><strong>Employee:</strong> ${name}</p>
-
-            <h4>Strengths</h4>
-
-            <ul>
-                <li>${selectedStrengths[0]}</li>
-                <li>${selectedStrengths[1]}</li>
-                <li>${selectedStrengths[2]}</li>
-            </ul>
-
-            <h4>Areas For Improvement</h4>
-
-            <ul>
-                <li>${selectedWeaknesses[0]}</li>
-                <li>${selectedWeaknesses[1]}</li>
-                <li>${selectedWeaknesses[2]}</li>
-            </ul>
-
-            <p>
-                <strong>Overall Rating:</strong>
-                ${pick([
-                    "Exceeds Expectations",
-                    "Technically Employed",
-                    "A Mystery To Management",
-                    "Needs Adult Supervision",
-                    "Unexpectedly Effective"
-                ])}
-            </p>
+            ${reviewHtml}
         </div>
 
         <div class="card">
