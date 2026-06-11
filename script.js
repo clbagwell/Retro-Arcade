@@ -1067,6 +1067,10 @@ function generateReport() {
     // SUPERHERO
     // =====================================
 
+    const heroTemplate = Math.floor(Math.random() * 8);
+    
+    let heroHtml = "";
+    
     const heroPrefixes = [
         "Captain",
         "Professor",
@@ -1189,10 +1193,301 @@ function generateReport() {
         `their own success`
     ];
 
+    const heroRoll = Math.random();
+
+    let heroTemplate;
+    
+    if (heroRoll < 0.02) {
+    
+        heroTemplate = 99;
+    
+    } else {
+    
+        heroTemplate =
+            Math.floor(Math.random() * 8);
+    }
+    
+    if (heroTemplate === 0) {  //Classic Origin Story
+
+    heroHtml = `
+            <h2>🦸 SUPERHERO ORIGIN STORY</h2>
+    
+            <p>
+                After a bizarre accident involving ${food},
+                ${name} became
+                <strong>${heroName}</strong>.
+            </p>
+    
+            <p>
+                Powers include ${superPower}.
+            </p>
+    
+            <p>
+                Weakness:
+                ${pick(superheroWeaknesses)}.
+            </p>
+    
+            <p>
+                Citizens remain cautiously optimistic.
+            </p>
+        `;
+    }
+
+    if (heroTemplate === 1) {  //Comic Book cover
+
+        heroHtml = `
+            <h2>📖 COMIC BOOK COVER</h2>
+    
+            <h3>
+                ${heroName}
+            </h3>
+    
+            <p>
+                Issue #${Math.floor(Math.random() * 100) + 1}
+            </p>
+    
+            <p>
+                This month:
+            </p>
+    
+            <p>
+                "Attack Of The ${food} Monsters!"
+            </p>
+    
+            <p>
+                Can our hero survive?
+            </p>
+        `;
+    }
+
+    if (heroTemplate === 2) {  //Trading Card
+
+        heroHtml = `
+            <h2>🃏 HERO TRADING CARD</h2>
+    
+            <p>
+                Name:
+                ${heroName}
+            </p>
+    
+            <p>
+                Attack:
+                ${randomScore()}
+            </p>
+    
+            <p>
+                Defense:
+                ${randomScore()}
+            </p>
+    
+            <p>
+                Snack Power:
+                ${randomScore()}
+            </p>
+    
+            <p>
+                Rarity:
+                ${pick([
+                    "Common",
+                    "Rare",
+                    "Epic",
+                    "Legendary"
+                ])}
+            </p>
+        `;
+    }
+
+    if (heroTemplate === 3) {  //Villain Dossier
+
+        heroHtml = `
+            <h2>🕶 SECRET INTELLIGENCE FILE</h2>
+    
+            <p>
+                Codename:
+                ${heroName}
+            </p>
+    
+            <p>
+                Known Activities:
+                ${hobby}
+            </p>
+    
+            <p>
+                Threat Level:
+                ${pick([
+                    "Minimal",
+                    "Moderate",
+                    "High",
+                    "Snack Related"
+                ])}
+            </p>
+    
+            <p>
+                Agents are advised to proceed carefully.
+            </p>
+        `;
+    }
+
+    if (heroTemplate === 4) {  //Movie Trailer
+
+        heroHtml = `
+            <h2>🎬 MOVIE TRAILER</h2>
+    
+            <p>
+                In a world...
+            </p>
+    
+            <p>
+                Where nobody was prepared for
+                ${food}...
+            </p>
+    
+            <p>
+                One hero rises.
+            </p>
+    
+            <p>
+                ${heroName}
+            </p>
+    
+            <p>
+                Coming this summer.
+            </p>
+        `;
+    }
+
+    if (heroTemplate === 5) {  //Hero Resume
+
+        heroHtml = `
+            <h2>📄 SUPERHERO RESUME</h2>
+    
+            <p>
+                Applicant:
+                ${heroName}
+            </p>
+    
+            <p>
+                Experience:
+                7 years fighting unnecessary problems.
+            </p>
+    
+            <p>
+                Skills:
+                ${superPower}
+            </p>
+    
+            <p>
+                References available upon request.
+            </p>
+        `;
+    }
+
+    if (heroTemplate === 6) {  //Newspaper Interview
+
+        heroHtml = `
+            <h2>📰 EXCLUSIVE INTERVIEW</h2>
+    
+            <p>
+                Reporter:
+                What motivates you?
+            </p>
+    
+            <p>
+                ${heroName}:
+                Mostly ${food}.
+            </p>
+    
+            <p>
+                Reporter:
+                Any regrets?
+            </p>
+    
+            <p>
+                ${heroName}:
+                Several.
+            </p>
+        `;
+    }
+
+    if (heroTemplate === 7) {  //Hero Wiki Page
+
+        heroHtml = `
+            <h2>📚 HERO ENCYCLOPEDIA</h2>
+    
+            <p>
+                ${heroName}
+                is a fictional superhero
+                known for
+                ${superPower}.
+            </p>
+    
+            <p>
+                First Appearance:
+                During a ${food}-related incident.
+            </p>
+    
+            <p>
+                Notable Rival:
+                The Evil Master Of ${hobby}.
+            </p>
+        `;
+    }
+
+    if (heroTemplate === 99) {  //Rare Secret Template
+
+        heroHtml = `
+            <div class="card easterEggCard ultimateEgg">
+    
+                <h2>👑 LEGENDARY HERO UNLOCKED</h2>
+    
+                <p>
+                    The multiverse has chosen
+                    ${heroName}.
+                </p>
+    
+                <p>
+                    Power Source:
+                    Infinite ${food}
+                </p>
+    
+                <p>
+                    Special Ability:
+                    ${superPower}
+                </p>
+    
+                <p>
+                    Weakness:
+                    None detected.
+                </p>
+    
+                <p>
+                    Reality itself has become a sidekick.
+                </p>
+    
+            </div>
+        `;
+    }
+    
     // =====================================
     // COURTROOM
     // =====================================
 
+    const courtroomRoll = Math.random();
+
+    let courtroomTemplate;
+    
+    if (courtroomRoll < 0.02) {
+    
+        courtroomTemplate = 99;
+    
+    } else {
+    
+        courtroomTemplate =
+            Math.floor(Math.random() * 8);
+    }
+    
+    let courtroomHtml = "";
+    
     const defense = pick([
         `the ${food} made me do it`,
         `I was conducting important research`,
@@ -1231,10 +1526,278 @@ function generateReport() {
         `a trophy of unclear origin`
     ];
 
+    if (courtroomTemplate === 0) {  //Traditional Courtroom Defense
+
+        courtroomHtml = `
+            <h2>⚖️ COURTROOM DEFENSE</h2>
+    
+            <p>
+                Your Honor, my client ${name},
+                a respected ${occupation},
+                would like the court to understand that
+                "${defense}."
+            </p>
+    
+            <p>
+                Evidence submitted includes
+                ${pick(courtroomEvidence)}.
+            </p>
+    
+            <p>
+                The jury remains unconvinced.
+            </p>
+        `;
+    }
+
+    if (courtroomTemplate === 1) {  //Cross Examination
+
+        courtroomHtml = `
+            <h2>🎤 CROSS EXAMINATION</h2>
+    
+            <p>
+                Lawyer: Did you cause the incident?
+            </p>
+    
+            <p>
+                ${name}: Define "incident."
+            </p>
+    
+            <p>
+                Lawyer: Were ${food} involved?
+            </p>
+    
+            <p>
+                ${name}: No comment.
+            </p>
+    
+            <p>
+                Judge: That's not helping.
+            </p>
+        `;
+    }
+
+    if (courtroomTemplate === 2) {  //Judge's Notes
+
+        courtroomHtml = `
+            <h2>📝 JUDGE'S NOTES</h2>
+    
+            <p>
+                Defendant:
+                ${name}
+            </p>
+    
+            <p>
+                Occupation:
+                ${occupation}
+            </p>
+    
+            <p>
+                Main Defense:
+                ${defense}
+            </p>
+    
+            <p>
+                Credibility:
+                Questionable
+            </p>
+    
+            <p>
+                Courtroom Behavior:
+                Surprisingly Confident
+            </p>
+        `;
+    }
+
+    if (courtroomTemplate === 3) {  //Jury Deliberation
+
+        courtroomHtml = `
+            <h2>👥 JURY DELIBERATION</h2>
+    
+            <p>
+                Juror #1:
+                I think they're innocent.
+            </p>
+    
+            <p>
+                Juror #2:
+                They brought ${food} to the scene.
+            </p>
+    
+            <p>
+                Juror #3:
+                That's not technically illegal.
+            </p>
+    
+            <p>
+                Jury Status:
+                Confused.
+            </p>
+        `;
+    }
+
+    if (courtroomTemplate === 4) {  //Police Report
+
+        courtroomHtml = `
+            <h2>🚓 POLICE INCIDENT REPORT</h2>
+    
+            <p>
+                Suspect:
+                ${name}
+            </p>
+    
+            <p>
+                Description:
+                Engaged in suspicious levels of
+                ${hobby}.
+            </p>
+    
+            <p>
+                Evidence Collected:
+                ${pick(courtroomEvidence)}
+            </p>
+    
+            <p>
+                Case Status:
+                Ongoing.
+            </p>
+        `;
+    }
+
+    if (courtroomTemplate === 5) {  //Witness Statement
+
+        courtroomHtml = `
+            <h2>👀 WITNESS STATEMENT</h2>
+    
+            <p>
+                I personally observed
+                ${name}
+                carrying
+                ${food}.
+            </p>
+    
+            <p>
+                Moments later,
+                events became difficult to explain.
+            </p>
+    
+            <p>
+                I would prefer not to be involved further.
+            </p>
+        `;
+    }
+
+    if (courtroomTemplate === 6) {  //Legal Statement
+
+        courtroomHtml = `
+            <h2>🤝 LEGAL SETTLEMENT</h2>
+    
+            <p>
+                The parties have agreed
+                to resolve the matter.
+            </p>
+    
+            <p>
+                ${name}
+                agrees to stop involving
+                ${food}
+                in official business.
+            </p>
+    
+            <p>
+                Both sides deny wrongdoing.
+            </p>
+        `;
+    }
+
+    if (courtroomTemplate === 7) {  //Supreme Court Opinion
+
+        courtroomHtml = `
+            <h2>🏛 SUPREME COURT OPINION</h2>
+    
+            <p>
+                The Court has reviewed
+                the evidence.
+            </p>
+    
+            <p>
+                While the actions of
+                ${name}
+                were unusual,
+                they were not technically prohibited.
+            </p>
+    
+            <p>
+                The lower court is reversed.
+            </p>
+    
+            <p>
+                The nation remains divided.
+            </p>
+        `;
+    }
+
+    if (courtroomTemplate === 99) {
+
+        courtroomHtml = `
+            <div class="card easterEggCard ultimateEgg">
+    
+                <h2>👑 TRIAL OF THE CENTURY</h2>
+    
+                <p>
+                    The courtroom was filled
+                    beyond capacity.
+                </p>
+    
+                <p>
+                    Defendant:
+                    ${name}
+                </p>
+    
+                <p>
+                    Charges:
+                    Excessive use of ${food}
+                    and reckless application of
+                    ${hobby}.
+                </p>
+    
+                <p>
+                    After twelve days of testimony,
+                    the jury returned a verdict.
+                </p>
+    
+                <p>
+                    NOT GUILTY.
+                </p>
+    
+                <p>
+                    The judge immediately requested
+                    a selfie.
+                </p>
+    
+            </div>
+        `;
+    }
+    
     // =====================================
     // ALIEN REPORT
     // =====================================
 
+    const alienRoll = Math.random();
+
+    let alienTemplate;
+    
+    if (alienRoll < 0.02) {
+    
+        alienTemplate = 99;
+    
+    } else {
+    
+        alienTemplate =
+            Math.floor(Math.random() * 8);
+    }
+    
+    let alienHtml = "";
+    
     const alienObservation = pick([
         `Subject displays unusual attachment to ${food}.`,
         `Subject frequently discusses ${hobby}.`,
@@ -1273,6 +1836,292 @@ function generateReport() {
         `Probability of future incidents remains high.`
     ];
 
+    if (alienTemplate === 0) {  //Classic Alien Field Report
+
+        alienHtml = `
+            <h2>👽 ALIEN FIELD REPORT</h2>
+    
+            <p>
+                Subject:
+                ${name}
+            </p>
+    
+            <p>
+                Observation:
+                ${alienObservation}
+            </p>
+    
+            <p>
+                Additional Notes:
+                Subject remains interested in ${food}.
+            </p>
+    
+            <p>
+                Recommendation:
+                ${pick(alienRecommendations)}
+            </p>
+        `;
+    }
+
+    if (alienTemplate === 1) {  //First Contact Log
+
+        alienHtml = `
+            <h2>🛸 FIRST CONTACT LOG</h2>
+    
+            <p>
+                Earth Subject:
+                ${name}
+            </p>
+    
+            <p>
+                Initial Communication Attempt:
+                Successful
+            </p>
+    
+            <p>
+                Subject immediately began discussing
+                ${hobby}.
+            </p>
+    
+            <p>
+                Negotiations were temporarily paused
+                for ${food}.
+            </p>
+        `;
+    }
+
+    if (alienTemplate === 2) {  //Scientific Research Notes
+
+        alienHtml = `
+            <h2>🔬 XENOBIOLOGY RESEARCH NOTES</h2>
+    
+            <p>
+                Specimen:
+                ${name}
+            </p>
+    
+            <p>
+                Habitat:
+                Areas containing ${food}
+            </p>
+    
+            <p>
+                Typical Behavior:
+                ${hobby}
+            </p>
+    
+            <p>
+                Conclusion:
+                Further observation required.
+            </p>
+        `;
+    }
+
+    if (alienTemplate === 3) {  //Threat Assessment
+
+        alienHtml = `
+            <h2>⚠️ GALACTIC THREAT ASSESSMENT</h2>
+    
+            <p>
+                Subject:
+                ${name}
+            </p>
+    
+            <p>
+                Influence Rating:
+                ${randomScore()}%
+            </p>
+    
+            <p>
+                Snack Acquisition Capability:
+                ${randomScore()}%
+            </p>
+    
+            <p>
+                Probability Of Causing Confusion:
+                ${randomScore()}%
+            </p>
+    
+            <p>
+                Threat Level:
+                ${pick([
+                    "Negligible",
+                    "Moderate",
+                    "Concerning",
+                    "Legendary"
+                ])}
+            </p>
+        `;
+    }
+
+    if (alienTemplate === 4) {  //Nature Documentary
+
+        alienHtml = `
+            <h2>🎥 NATURE DOCUMENTARY</h2>
+    
+            <p>
+                Here we see the rare
+                ${name}
+                in its natural habitat.
+            </p>
+    
+            <p>
+                Notice how it approaches
+                ${food}
+                with remarkable determination.
+            </p>
+    
+            <p>
+                The creature then performs
+                a mating ritual known as
+                ${hobby}.
+            </p>
+    
+            <p>
+                Fascinating.
+            </p>
+        `;
+    }
+
+    if (alienTemplate === 5) {  //Galactic Census
+
+        alienHtml = `
+            <h2>📋 GALACTIC CENSUS RECORD</h2>
+    
+            <p>
+                Name:
+                ${name}
+            </p>
+    
+            <p>
+                Occupation:
+                ${occupation}
+            </p>
+    
+            <p>
+                Primary Fuel Source:
+                ${food}
+            </p>
+    
+            <p>
+                Recreational Activity:
+                ${hobby}
+            </p>
+    
+            <p>
+                Classification:
+                Mostly Harmless
+            </p>
+        `;
+    }
+
+    if (alienTemplate === 6) {  //Alien Podcast Transcript
+
+        alienHtml = `
+            <h2>🎙 INTERGALACTIC PODCAST</h2>
+    
+            <p>
+                Host:
+                Welcome back to
+                Strange Humans Weekly.
+            </p>
+    
+            <p>
+                Today's topic:
+                ${name}.
+            </p>
+    
+            <p>
+                Co-Host:
+                The one obsessed with
+                ${food}?
+            </p>
+    
+            <p>
+                Host:
+                Exactly.
+            </p>
+    
+            <p>
+                Co-Host:
+                Incredible guest.
+            </p>
+        `;
+    }
+
+    if (alienTemplate === 7) {  //Conspiracy File
+
+        alienHtml = `
+            <h2>🕵️ CLASSIFIED CONSPIRACY FILE</h2>
+    
+            <p>
+                Evidence suggests that
+                ${name}
+                may already know about
+                extraterrestrial activity.
+            </p>
+    
+            <p>
+                Suspicious Behavior:
+                ${hobby}
+            </p>
+    
+            <p>
+                Known Associates:
+                Individuals connected to
+                ${food}.
+            </p>
+    
+            <p>
+                File Status:
+                Redacted.
+            </p>
+        `;
+    }
+
+    if (alienTemplate === 99) {  //Rare Secret Template
+
+        alienHtml = `
+            <div class="card easterEggCard ultimateEgg">
+    
+                <h2>🌌 CHOSEN ONE OF THE GALAXY</h2>
+    
+                <p>
+                    Galactic archives have been opened.
+                </p>
+    
+                <p>
+                    After reviewing ten million civilizations,
+                    the Council has selected
+                    ${name}.
+                </p>
+    
+                <p>
+                    Primary Qualification:
+                    Exceptional commitment to
+                    ${food}.
+                </p>
+    
+                <p>
+                    Secondary Qualification:
+                    Mastery of
+                    ${hobby}.
+                </p>
+    
+                <p>
+                    Effective immediately,
+                    the Milky Way has been placed
+                    under your supervision.
+                </p>
+    
+                <p>
+                    No pressure.
+                </p>
+    
+            </div>
+        `;
+    }
+    
     // =====================================
     // Special Easter Egg Card
     // =====================================
@@ -1504,66 +2353,15 @@ function generateReport() {
         </div>
 
         <div class="card">
-            <h2>🦸 SUPERHERO ORIGIN STORY</h2>
-
-            <p>
-                After a bizarre accident involving ${food},
-                ${name} became <strong>${heroName}</strong>.
-            </p>
-
-            <p>
-                Their powers include ${superPower}.
-            </p>
-
-            <p>
-                Their only weakness is
-                ${pick(superheroWeaknesses)}.
-            </p>
-
-            <p>
-                Citizens remain cautiously optimistic.
-            </p>
+            ${heroHtml}
         </div>
 
         <div class="card">
-            <h2>⚖️ COURTROOM DEFENSE</h2>
-
-            <p>
-                Your Honor, my client ${name},
-                a respected ${occupation},
-                would like the court to understand that
-                "${defense}."
-            </p>
-
-            <p>
-                Evidence submitted includes
-                ${pick(courtroomEvidence)}.
-            </p>
-
-            <p>
-                The jury remains unconvinced.
-            </p>
+            ${courtroomHtml}
         </div>
 
         <div class="card">
-            <h2>👽 ALIEN FIELD REPORT</h2>
-
-            <p>Subject Name: ${name}</p>
-
-            <p>
-                Observation:
-                ${alienObservation}
-            </p>
-
-            <p>
-                Additional Notes:
-                Subject appears unusually interested in ${food}.
-            </p>
-
-            <p>
-                Recommendation:
-                ${pick(alienRecommendations)}
-            </p>
+            ${alienHtml}
         </div>
 
         <div class="card">
