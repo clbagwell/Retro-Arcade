@@ -440,8 +440,7 @@ function generateReport() {
     
             <p>
                 In the year ${currentYear},
-                ${name} attempted
-                ${hobby}.
+                ${name} attempted ${hobby}.
             </p>
     
             <p>
@@ -958,15 +957,17 @@ function generateReport() {
 
         datingHtml = `
             <h2>🕵️ FBI BEHAVIORAL PROFILE</h2>
-    
+
             <p>
-                Subject:
-                ${name}
+                Report Generated: ${currentDate}
+            </p>
+
+            <p>
+                Subject: ${name}
             </p>
     
             <p>
-                Known Activities:
-                ${hobby}
+                Known Activities: ${hobby}
             </p>
     
             <p>
@@ -1245,7 +1246,11 @@ function generateReport() {
             <p>
                 Issue #${Math.floor(Math.random() * 100) + 1}
             </p>
-    
+
+            <p>
+                First published in ${currentYear}
+            </p>
+            
             <p>
                 This month:
             </p>
@@ -1840,7 +1845,12 @@ function generateReport() {
 
         alienHtml = `
             <h2>👽 ALIEN FIELD REPORT</h2>
-    
+
+            <p>
+                Earth Date:
+                ${currentDate}
+            </p>
+
             <p>
                 Subject:
                 ${name}
