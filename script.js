@@ -1059,10 +1059,6 @@ function generateReport() {
     // =====================================
     // SUPERHERO
     // =====================================
-
-    const heroTemplate = Math.floor(Math.random() * 8);
-    
-    let heroHtml = "";
     
     const heroPrefixes = [
         "Captain",
@@ -1189,6 +1185,8 @@ function generateReport() {
     const heroRoll = Math.random();
 
     let heroTemplate;
+    
+    let heroHtml = "";
     
     if (heroRoll < 0.02) {
     
