@@ -1,6 +1,5 @@
 import "./styles.css";
-import { Engine } from "./engine/Engine";
-import { DemoGame } from "./games/demo/DemoGame";
+import { ArcadeShell } from "./arcade/ArcadeShell";
 
 const app = document.querySelector<HTMLDivElement>("#app");
 
@@ -9,26 +8,19 @@ if (!app) {
 }
 
 try {
-  console.log("🎮 Initializing Retro-Arcade engine...");
-  
-  const engine = new Engine({
-    parent: app,
-    game: new DemoGame(),
-  });
+  console.log("🎮 Initializing Retro-Arcade shell...");
 
-  console.log("✅ Engine initialized successfully");
-  console.log("🚀 Starting engine...");
-  
-  engine.start();
-  
-  console.log("✅ Engine running");
+  const shell = new ArcadeShell({ parent: app, initialGameId: "demo" });
+  shell.start();
+
+  console.log("✅ Arcade shell initialized successfully");
 } catch (error) {
   const errorMessage = error instanceof Error ? error.message : String(error);
-  console.error("❌ Failed to start engine:", errorMessage);
-  
+  console.error("❌ Failed to start arcade shell:", errorMessage);
+
   app.innerHTML = `
     <div style="padding: 20px; color: red; font-family: monospace;">
-      <h2>Error Starting Game</h2>
+      <h2>Error Starting Arcade</h2>
       <p>${errorMessage}</p>
       <small>Check the browser console for more details.</small>
     </div>

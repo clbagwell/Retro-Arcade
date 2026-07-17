@@ -8,7 +8,7 @@ interface EngineOptions {
 
 export class Engine {
   private readonly viewport: CanvasViewport;
-  private readonly game: Game;
+  private game: Game;
   private animationFrame = 0;
   private lastFrameTime = 0;
   private running = false;
@@ -41,6 +41,18 @@ export class Engine {
     window.removeEventListener("resize", this.handleResize);
     cancelAnimationFrame(this.animationFrame);
     this.game.destroy?.();
+  }
+
+  setGame(nextGame: Game): void {
+    if (this.running) {
+      this.game.destroy?.();
+      this.game = nextGame;
+      this.game.init?.(this.context);
+      this.game.resize?.(this.context);
+      return;
+    }
+
+    this.game = nextGame;
   }
 
   private get context(): GameContext {
