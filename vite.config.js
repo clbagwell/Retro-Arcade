@@ -1,5 +1,5 @@
 export default {
-  base: "/Retro-Arcade/",
+  base: "./",
   build: {
     outDir: "docs",
   },
