@@ -48,10 +48,9 @@ This project is configured to publish a static Vite build to GitHub Pages.
 
 ### Deployment flow
 
-1. Push changes to the main branch.
-2. GitHub Actions runs the workflow in [.github/workflows/deploy-pages.yml](.github/workflows/deploy-pages.yml).
-3. The workflow installs dependencies, runs npm run build, and publishes the generated site from the docs folder.
-4. GitHub Pages serves the contents of docs at the published site URL.
+1. Run npm run build locally to generate the static site in the docs directory.
+2. Commit and push the updated docs folder and any source changes to the main branch.
+3. GitHub Pages serves the contents of docs at the published site URL.
 
 ### Important notes
 
@@ -61,7 +60,7 @@ This project is configured to publish a static Vite build to GitHub Pages.
 
 ### How to verify the deployment
 
-1. Confirm the GitHub Actions workflow completed successfully for the latest push.
+1. Confirm the latest commit containing the built docs output has been pushed to the main branch.
 2. Open the published site URL in a browser.
 3. Verify the page loads without console errors such as failed asset requests.
 4. Check that the browser network tab shows the built assets loading from the published site path.
