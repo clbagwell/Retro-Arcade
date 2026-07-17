@@ -10,7 +10,7 @@ A collection of retro arcade games built with TypeScript and a custom game engin
 
 ## Project Structure
 
-```
+```bash
 src/
 ├── engine/       # Core game engine
 ├── games/        # Game implementations
