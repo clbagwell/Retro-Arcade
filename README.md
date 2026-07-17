@@ -42,6 +42,31 @@ npm run build
 
 - **DemoGame** - Sample implementation showcasing engine capabilities
 
+## GitHub Pages Deployment
+
+This project is configured to publish a static Vite build to GitHub Pages.
+
+### Deployment flow
+
+1. Push changes to the main branch.
+2. GitHub Actions runs the workflow in [.github/workflows/deploy-pages.yml](.github/workflows/deploy-pages.yml).
+3. The workflow installs dependencies, runs npm run build, and publishes the generated site from the docs folder.
+4. GitHub Pages serves the contents of docs at the published site URL.
+
+### Important notes
+
+- The Vite build output is written to the docs directory for GitHub Pages compatibility.
+- A .nojekyll file is included in the docs folder so static assets are served correctly.
+- If you change the app entry or asset paths, rebuild the project and confirm the generated docs output before pushing.
+
+### How to verify the deployment
+
+1. Confirm the GitHub Actions workflow completed successfully for the latest push.
+2. Open the published site URL in a browser.
+3. Verify the page loads without console errors such as failed asset requests.
+4. Check that the browser network tab shows the built assets loading from the published site path.
+5. If the page still appears blank, confirm the latest commit has finished deploying and that Pages is serving the current branch content.
+
 ## Contributing
 
 Contributions are welcome! Feel free to submit pull requests or open issues.
