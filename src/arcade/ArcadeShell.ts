@@ -59,7 +59,25 @@ export class ArcadeShell {
       this.buttons.push(button);
     }
 
-    this.panel.append(title, subtitle, menu);
+    // Settings: show/hide on-screen hints
+    const settings = document.createElement("div");
+    settings.className = "arcade-settings";
+    const hintsBtn = document.createElement("button");
+    hintsBtn.type = "button";
+    hintsBtn.className = "arcade-settings-button";
+    const current = localStorage.getItem("retro-arcade.showHints");
+    const showHints = current === null ? "true" : current;
+    hintsBtn.textContent = showHints === "true" ? "Hints: On" : "Hints: Off";
+    hintsBtn.addEventListener("click", () => {
+      const now = localStorage.getItem("retro-arcade.showHints");
+      const enabled = now === null ? true : now === "true";
+      const next = !enabled;
+      localStorage.setItem("retro-arcade.showHints", String(next));
+      hintsBtn.textContent = next ? "Hints: On" : "Hints: Off";
+    });
+    settings.append(hintsBtn);
+
+    this.panel.append(title, subtitle, menu, settings);
     this.parent.append(this.panel);
     this.syncSelection();
   }

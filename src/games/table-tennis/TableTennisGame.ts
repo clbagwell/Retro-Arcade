@@ -12,6 +12,7 @@ export class TableTennisGame implements Game {
   private leftScore = 0;
   private rightScore = 0;
   private gameOver = false;
+  private hintTimer = 0;
 
   init(context: GameContext): void {
     this.reset(context);
@@ -32,6 +33,17 @@ export class TableTennisGame implements Game {
         this.reset(context);
       }
       return;
+    }
+
+    // Track hint timer when hints are enabled and not yet marked as shown
+    const showPref = localStorage.getItem("retro-arcade.showHints");
+    const hintsEnabled = showPref === null ? true : showPref === "true";
+    const hintShown = localStorage.getItem("retro-arcade.hintShown") === "true";
+    if (hintsEnabled && !hintShown) {
+      this.hintTimer += deltaSeconds;
+      if (this.hintTimer >= 4) {
+        localStorage.setItem("retro-arcade.hintShown", "true");
+      }
     }
 
     const moveAmount = 320 * deltaSeconds;
@@ -126,20 +138,46 @@ export class TableTennisGame implements Game {
       ctx.fillText(prompt, width * 0.5 - ctx.measureText(prompt).width * 0.5, height * 0.55);
     }
 
-    // On-screen control hint (bottom-right)
-    const hint = "Controls: W/S or ↑/↓ — Tap left to move — Enter/Space to restart";
-    ctx.font = "400 14px ui-sans-serif, system-ui, sans-serif";
-    const padding = 12;
-    const textWidth = ctx.measureText(hint).width;
-    const boxW = textWidth + padding * 2;
-    const boxH = 36;
-    const boxX = Math.max(20, width - boxW - 20);
-    const boxY = height - boxH - 18;
+    // On-screen control hint (bottom-right) — respect user preference and animate first-show
+    const showPref = localStorage.getItem("retro-arcade.showHints");
+    const hintsEnabled = showPref === null ? true : showPref === "true";
+    const hintShown = localStorage.getItem("retro-arcade.hintShown") === "true";
+    if (hintsEnabled && (!hintShown || this.hintTimer < 4)) {
+      const hint = "W/S or ↑/↓ — Tap left to move — Enter/Space to restart";
+      ctx.font = "400 14px ui-sans-serif, system-ui, sans-serif";
+      const padding = 12;
+      const textWidth = ctx.measureText(hint).width;
+      const boxW = textWidth + padding * 2 + 40; // extra space for icons
+      const boxH = 40;
+      const boxX = Math.max(20, width - boxW - 20);
+      const boxY = height - boxH - 18;
 
-    ctx.fillStyle = "rgba(2, 6, 23, 0.6)";
-    ctx.fillRect(boxX, boxY, boxW, boxH);
-    ctx.fillStyle = "#f8fafc";
-    ctx.fillText(hint, boxX + padding, boxY + 22);
+      // alpha fades out after hintTimer > 0 up to 4s
+      const alpha = Math.max(0.15, 1 - Math.max(0, this.hintTimer) / 4);
+
+      ctx.save();
+      ctx.globalAlpha = alpha * 0.95;
+      ctx.fillStyle = "rgba(2, 6, 23, 0.6)";
+      ctx.fillRect(boxX, boxY, boxW, boxH);
+
+      // draw simple key icons
+      const iconX = boxX + 8;
+      const iconY = boxY + 8;
+      ctx.fillStyle = "#0f172a";
+      ctx.fillRect(iconX, iconY, 24, 24);
+      ctx.fillRect(iconX + 30, iconY, 24, 24);
+      ctx.fillStyle = "#f8fafc";
+      ctx.font = "600 12px ui-sans-serif, system-ui, sans-serif";
+      ctx.fillText("W", iconX + 6, iconY + 16);
+      ctx.fillText("S", iconX + 36, iconY + 16);
+
+      // text
+      ctx.fillStyle = "#f8fafc";
+      ctx.font = "400 14px ui-sans-serif, system-ui, sans-serif";
+      ctx.fillText(hint, iconX + 64, boxY + 26);
+
+      ctx.restore();
+    }
   }
 
   destroy(): void {
