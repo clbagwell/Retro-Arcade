@@ -1,4 +1,6 @@
 import { CanvasViewport } from "./CanvasViewport";
+import { InputManager } from "./Input";
+import { SceneManager } from "./SceneManager";
 import type { Game, GameContext } from "./types";
 
 interface EngineOptions {
@@ -8,14 +10,17 @@ interface EngineOptions {
 
 export class Engine {
   private readonly viewport: CanvasViewport;
-  private game: Game;
+  private readonly input: InputManager;
+  private readonly sceneManager: SceneManager;
   private animationFrame = 0;
   private lastFrameTime = 0;
   private running = false;
 
   constructor({ parent, game }: EngineOptions) {
     this.viewport = new CanvasViewport(parent);
-    this.game = game;
+    this.input = new InputManager();
+    this.sceneManager = new SceneManager();
+    this.sceneManager.setScene(game, undefined, false);
     this.handleResize = this.handleResize.bind(this);
     this.tick = this.tick.bind(this);
   }
@@ -27,8 +32,7 @@ export class Engine {
 
     this.running = true;
     window.addEventListener("resize", this.handleResize);
-    this.game.init?.(this.context);
-    this.game.resize?.(this.context);
+    this.sceneManager.start(this.context);
     this.animationFrame = requestAnimationFrame(this.tick);
   }
 
@@ -40,29 +44,33 @@ export class Engine {
     this.running = false;
     window.removeEventListener("resize", this.handleResize);
     cancelAnimationFrame(this.animationFrame);
-    this.game.destroy?.();
+    this.sceneManager.stop();
   }
 
   setGame(nextGame: Game): void {
     if (this.running) {
-      this.game.destroy?.();
-      this.game = nextGame;
-      this.game.init?.(this.context);
-      this.game.resize?.(this.context);
+      this.sceneManager.setScene(nextGame, this.context, true);
       return;
     }
 
-    this.game = nextGame;
+    this.sceneManager.setScene(nextGame, undefined, false);
   }
 
   private get context(): GameContext {
-    return this.viewport.getContext();
+    const base = this.viewport.getContext();
+    return {
+      ...base,
+      input: this.input.getState(),
+    };
   }
 
   private handleResize(): void {
-    if (this.viewport.resize()) {
-      this.game.resize?.(this.context);
+    if (!this.viewport.resize()) {
+      return;
     }
+
+    const current = this.sceneManager.currentGame;
+    current?.resize?.(this.context);
   }
 
   private tick(time: DOMHighResTimeStamp): void {
@@ -75,8 +83,12 @@ export class Engine {
     this.lastFrameTime = time;
 
     const context = this.context;
-    this.game.update(deltaSeconds, context);
-    this.game.render(context);
+    const current = this.sceneManager.currentGame;
+    if (current) {
+      this.input.update();
+      current.update(deltaSeconds, context);
+      current.render(context);
+    }
 
     this.animationFrame = requestAnimationFrame(this.tick);
   }
