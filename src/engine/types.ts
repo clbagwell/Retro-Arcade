@@ -5,6 +5,16 @@ export interface InputState {
   gamepads: Array<{ axes: number[]; buttons: boolean[] }>;
 }
 
+export interface GameInput extends InputState {
+  isKeyDown(code: string): boolean;
+  anyKeyDown(...codes: string[]): boolean;
+  isPointerDown(): boolean;
+  pointerInLeftHalf(width: number): boolean;
+  getPrimaryGamepad():
+    | { axes: number[]; buttons: boolean[] }
+    | undefined;
+}
+
 export interface GameContext {
   canvas: HTMLCanvasElement;
   ctx: CanvasRenderingContext2D;
@@ -13,7 +23,7 @@ export interface GameContext {
   pixelRatio: number;
   // input may be undefined when the engine composes the full context; engines
   // should expect an `input` snapshot to be present during updates/renders.
-  input?: InputState;
+  input?: GameInput;
 }
 
 export interface Game {

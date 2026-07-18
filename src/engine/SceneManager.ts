@@ -7,11 +7,11 @@ export class SceneManager {
     return this.current;
   }
 
-  // Replace the active scene. If `running` is true we will destroy the previous
-  // scene (if any) and initialize/resize the new scene immediately with the
-  // provided context.
+  // Replace the active scene and cleanly dispose of the previous one.
+  // When the engine is already running, the new scene is initialized and
+  // resized immediately using the current game context.
   setScene(next: Game, context?: GameContext, running = false): void {
-    if (running && this.current) {
+    if (this.current) {
       this.current.destroy?.();
     }
 

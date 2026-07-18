@@ -26,7 +26,7 @@ export class TableTennisGame implements Game {
     const { width, height, input } = context;
 
     if (this.gameOver) {
-      if (input && (input.keys.Enter || input.keys.Space)) {
+      if (input?.anyKeyDown("Enter", "Space")) {
         this.leftScore = 0;
         this.rightScore = 0;
         this.gameOver = false;
@@ -49,22 +49,20 @@ export class TableTennisGame implements Game {
     const moveAmount = 320 * deltaSeconds;
 
     if (input) {
-      if (input.keys.ArrowUp || input.keys.KeyW) {
+      if (input.anyKeyDown("ArrowUp", "KeyW")) {
         this.paddleY -= moveAmount;
       }
-      if (input.keys.ArrowDown || input.keys.KeyS) {
+      if (input.anyKeyDown("ArrowDown", "KeyS")) {
         this.paddleY += moveAmount;
       }
 
-      if (input.pointer.down && input.pointer.x < width * 0.5) {
+      if (input.pointerInLeftHalf(width)) {
         this.paddleY = input.pointer.y - 40;
       }
 
-      if (input.gamepads.length > 0) {
-        const pad = input.gamepads[0];
-        if (pad.axes.length > 1) {
-          this.paddleY += pad.axes[1] * moveAmount;
-        }
+      const pad = input.getPrimaryGamepad();
+      if (pad && pad.axes.length > 1) {
+        this.paddleY += pad.axes[1] * moveAmount;
       }
     }
 

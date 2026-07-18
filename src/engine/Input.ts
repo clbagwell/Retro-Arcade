@@ -1,4 +1,38 @@
-import type { InputState } from "./types";
+import type { GameInput, InputState } from "./types";
+
+class InputSnapshot implements GameInput {
+  readonly keys: Record<string, boolean>;
+  readonly pointer: { x: number; y: number; down: boolean };
+  readonly touches: Array<{ id: number; x: number; y: number }>;
+  readonly gamepads: Array<{ axes: number[]; buttons: boolean[] }>;
+
+  constructor(state: InputState) {
+    this.keys = { ...state.keys };
+    this.pointer = { ...state.pointer };
+    this.touches = state.touches.map((touch) => ({ ...touch }));
+    this.gamepads = state.gamepads.map((pad) => ({ axes: [...pad.axes], buttons: [...pad.buttons] }));
+  }
+
+  isKeyDown(code: string): boolean {
+    return Boolean(this.keys[code]);
+  }
+
+  anyKeyDown(...codes: string[]): boolean {
+    return codes.some((code) => Boolean(this.keys[code]));
+  }
+
+  isPointerDown(): boolean {
+    return this.pointer.down;
+  }
+
+  pointerInLeftHalf(width: number): boolean {
+    return this.pointer.down && this.pointer.x < width * 0.5;
+  }
+
+  getPrimaryGamepad(): { axes: number[]; buttons: boolean[] } | undefined {
+    return this.gamepads[0];
+  }
+}
 
 export class InputManager {
   private state: InputState = {
@@ -82,14 +116,13 @@ export class InputManager {
     this.state.gamepads = pads;
   }
 
-  getState(): InputState {
-    // Return a shallow copy to avoid accidental mutation by games
-    return {
+  getState(): GameInput {
+    return new InputSnapshot({
       keys: { ...this.state.keys },
       pointer: { ...this.state.pointer },
       touches: this.state.touches.map((t) => ({ ...t })),
       gamepads: this.state.gamepads.map((g) => ({ axes: [...g.axes], buttons: [...g.buttons] })),
-    };
+    });
   }
 
   dispose(): void {
