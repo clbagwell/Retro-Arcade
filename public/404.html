@@ -19,27 +19,10 @@
         const pathname = window.location.pathname;
         const segments = pathname.split('/').filter(Boolean);
         const repoRoot = segments.length > 0 ? '/' + segments[0] + '/' : '/';
-        const rootIndexUrl = repoRoot + 'index.html';
-        const docsIndexUrl = repoRoot + 'docs/index.html';
-        const redirectMarker = /location\.replace\(["']\.\/docs\//;
-        const refreshMarker = /meta http-equiv=["']refresh["']/i;
-
-        function writeHtml(html){ document.open(); document.write(html); document.close(); }
-        function loadText(url){ return fetch(url).then(function(r){ if(!r.ok) throw new Error('no index'); return r.text(); }); }
-
-        var homeLink = document.getElementById('home-link');
-        if (homeLink) {
-          homeLink.href = repoRoot;
-        }
-
-        loadText(rootIndexUrl).then(function(html){
-          if (redirectMarker.test(html) || refreshMarker.test(html)) {
-            return loadText(docsIndexUrl);
-          }
-          return html;
-        }).then(writeHtml).catch(function(){
-          setTimeout(function(){ location.replace(repoRoot); }, 800);
-        });
+        const docsUrl = location.origin + repoRoot + 'docs/';
+        const homeLink = document.getElementById('home-link');
+        if (homeLink) homeLink.href = location.origin + repoRoot;
+        setTimeout(function(){ location.replace(docsUrl); }, 300);
       })();
     </script>
   </body>
