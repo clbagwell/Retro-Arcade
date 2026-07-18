@@ -15,10 +15,22 @@
     </main>
     <style>@keyframes spin{0%{transform:rotate(0)}100%{transform:rotate(360deg)}}</style>
     <script>
+      // Try to fetch the docs index. If that fetch returns our root redirect
+      // HTML (in case of unusual host config), fall back to a safe redirect.
       (function(){
+        function writeHtml(html){ document.open(); document.write(html); document.close(); }
+
         fetch('./docs/index.html').then(function(r){ if(!r.ok) throw new Error('no index'); return r.text(); }).then(function(html){
-          document.open(); document.write(html); document.close();
+          if (html.includes('location.replace("./docs/') || html.includes('meta http-equiv="refresh"')) {
+            // avoid loop, redirect directly
+            setTimeout(function(){ location.replace('./docs/'); }, 300);
+            throw new Error('redirect-marker');
+          }
+          return html;
+        }).then(function(finalHtml){
+          writeHtml(finalHtml);
         }).catch(function(){
+          // as a last resort send user to the docs folder
           setTimeout(function(){ location.replace('./docs/'); }, 800);
         });
       })();

@@ -15,10 +15,19 @@
     </main>
     <style>@keyframes spin{0%{transform:rotate(0)}100%{transform:rotate(360deg)}}</style>
     <script>
-      // SPA fallback: fetch the built index and write it into the document so client-side routing can continue
+      // SPA fallback: try to load the built index. If the fetched HTML contains
+      // a redirect (root index), fetch the docs index to avoid redirect loops.
       (function(){
+        function writeHtml(html){ document.open(); document.write(html); document.close(); }
+
         fetch('./index.html').then(function(r){ if(!r.ok) throw new Error('no index'); return r.text(); }).then(function(html){
-          document.open(); document.write(html); document.close();
+          // detect our root redirect marker
+          if (html.includes('location.replace("./docs/') || html.includes('meta http-equiv="refresh"')) {
+            return fetch('./docs/index.html');
+          }
+          return { text: function(){ return Promise.resolve(html); } };
+        }).then(function(res){ return res.text(); }).then(function(finalHtml){
+          writeHtml(finalHtml);
         }).catch(function(){
           // fallback to redirect to site root
           setTimeout(function(){ location.replace('./'); }, 800);
