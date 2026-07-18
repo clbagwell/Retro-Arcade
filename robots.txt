@@ -1,0 +1,3 @@
+User-agent: *
+Allow: /
+# Root robots for GitHub Pages

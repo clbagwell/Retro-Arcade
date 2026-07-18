@@ -1,0 +1,21 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>Page not found — Retro Arcade</title>
+  </head>
+  <body>
+    <p>Page not found. Loading application...</p>
+    <script>
+      // SPA fallback: load the app index so client-side routing can handle the path
+      fetch('./index.html').then(function(r){ return r.text(); }).then(function(html){
+        document.open(); document.write(html); document.close();
+        // preserve the URL so the app router can read it
+      }).catch(function(){
+        // fallback: redirect to the app root
+        location.replace('./');
+      });
+    </script>
+  </body>
+</html>

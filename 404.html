@@ -1,0 +1,19 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>Page not found — Retro Arcade</title>
+  </head>
+  <body>
+    <p>Page not found. Loading application...</p>
+    <script>
+      // Root fallback: fetch the built app in docs
+      fetch('./docs/index.html').then(function(r){ return r.text(); }).then(function(html){
+        document.open(); document.write(html); document.close();
+      }).catch(function(){
+        location.replace('./docs/');
+      });
+    </script>
+  </body>
+</html>
