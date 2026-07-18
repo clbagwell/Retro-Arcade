@@ -1,37 +1,92 @@
 import type { Game, GameContext } from "../../engine/types";
 
+const MAX_SCORE = 5;
+
 export class TableTennisGame implements Game {
   private x = 160;
   private y = 120;
   private vx = 220;
   private vy = 180;
   private paddleY = 0;
+  private opponentY = 0;
+  private leftScore = 0;
+  private rightScore = 0;
+  private gameOver = false;
 
   init(context: GameContext): void {
-    this.resize(context);
+    this.reset(context);
   }
 
-  resize({ width, height }: GameContext): void {
-    this.x = width * 0.5;
-    this.y = height * 0.5;
-    this.paddleY = height / 2 - 40;
+  resize(context: GameContext): void {
+    this.reset(context);
   }
 
-  update(deltaSeconds: number, { width, height }: GameContext): void {
+  update(deltaSeconds: number, context: GameContext): void {
+    const { width, height, input } = context;
+
+    if (this.gameOver) {
+      if (input && (input.keys.Enter || input.keys.Space)) {
+        this.leftScore = 0;
+        this.rightScore = 0;
+        this.gameOver = false;
+        this.reset(context);
+      }
+      return;
+    }
+
+    const moveAmount = 320 * deltaSeconds;
+
+    if (input) {
+      if (input.keys.ArrowUp || input.keys.KeyW) {
+        this.paddleY -= moveAmount;
+      }
+      if (input.keys.ArrowDown || input.keys.KeyS) {
+        this.paddleY += moveAmount;
+      }
+
+      if (input.pointer.down && input.pointer.x < width * 0.5) {
+        this.paddleY = input.pointer.y - 40;
+      }
+
+      if (input.gamepads.length > 0) {
+        const pad = input.gamepads[0];
+        if (pad.axes.length > 1) {
+          this.paddleY += pad.axes[1] * moveAmount;
+        }
+      }
+    }
+
+    this.paddleY = Math.min(Math.max(this.paddleY, 24), height - 104);
+    this.opponentY = Math.min(Math.max(this.y - 40, 24), height - 104);
+
     this.x += this.vx * deltaSeconds;
     this.y += this.vy * deltaSeconds;
-
-    if (this.x <= 24 || this.x >= width - 24) {
-      this.vx *= -1;
-      this.x = Math.min(Math.max(this.x, 24), width - 24);
-    }
 
     if (this.y <= 24 || this.y >= height - 24) {
       this.vy *= -1;
       this.y = Math.min(Math.max(this.y, 24), height - 24);
     }
 
-    this.paddleY = Math.min(Math.max(this.paddleY, 24), height - 104);
+    const leftPaddleRect = { x: 24, y: this.paddleY, w: 12, h: 80 };
+    const rightPaddleRect = { x: width - 48, y: this.opponentY, w: 12, h: 80 };
+
+    if (this.collides(leftPaddleRect, this.x, this.y, 14)) {
+      this.vx = Math.abs(this.vx);
+      this.x = leftPaddleRect.x + leftPaddleRect.w + 14;
+    }
+
+    if (this.collides(rightPaddleRect, this.x, this.y, 14)) {
+      this.vx = -Math.abs(this.vx);
+      this.x = rightPaddleRect.x - 14;
+    }
+
+    if (this.x <= 0) {
+      this.scorePoint(false, context);
+    }
+
+    if (this.x >= width) {
+      this.scorePoint(true, context);
+    }
   }
 
   render({ ctx, width, height }: GameContext): void {
@@ -45,7 +100,7 @@ export class TableTennisGame implements Game {
 
     ctx.fillStyle = "#f8fafc";
     ctx.fillRect(24, this.paddleY, 12, 80);
-    ctx.fillRect(width - 36, height * 0.5 - 40, 12, 80);
+    ctx.fillRect(width - 48, this.opponentY, 12, 80);
 
     ctx.fillStyle = "#fbbf24";
     ctx.beginPath();
@@ -54,11 +109,75 @@ export class TableTennisGame implements Game {
 
     ctx.fillStyle = "#e2e8f0";
     ctx.font = "600 20px ui-sans-serif, system-ui, sans-serif";
-    ctx.fillText("Arcade Pong", 28, 44);
+    ctx.fillText("Table Tennis", 28, 44);
+    ctx.fillText(`${this.leftScore} - ${this.rightScore}`, width * 0.5 - 24, 44);
+
+    if (this.gameOver) {
+      ctx.fillStyle = "rgba(2, 6, 23, 0.85)";
+      ctx.fillRect(0, height * 0.35, width, 140);
+
+      ctx.fillStyle = "#f8fafc";
+      ctx.font = "700 32px ui-sans-serif, system-ui, sans-serif";
+      const winner = this.leftScore > this.rightScore ? "You Win!" : "Opponent Wins";
+      ctx.fillText(winner, width * 0.5 - ctx.measureText(winner).width * 0.5, height * 0.45);
+
+      ctx.font = "500 18px ui-sans-serif, system-ui, sans-serif";
+      const prompt = "Press Enter or Space to restart";
+      ctx.fillText(prompt, width * 0.5 - ctx.measureText(prompt).width * 0.5, height * 0.55);
+    }
+
+    // On-screen control hint (bottom-right)
+    const hint = "Controls: W/S or ↑/↓ — Tap left to move — Enter/Space to restart";
+    ctx.font = "400 14px ui-sans-serif, system-ui, sans-serif";
+    const padding = 12;
+    const textWidth = ctx.measureText(hint).width;
+    const boxW = textWidth + padding * 2;
+    const boxH = 36;
+    const boxX = Math.max(20, width - boxW - 20);
+    const boxY = height - boxH - 18;
+
+    ctx.fillStyle = "rgba(2, 6, 23, 0.6)";
+    ctx.fillRect(boxX, boxY, boxW, boxH);
+    ctx.fillStyle = "#f8fafc";
+    ctx.fillText(hint, boxX + padding, boxY + 22);
   }
 
   destroy(): void {
-    this.x = 0;
-    this.y = 0;
+    this.leftScore = 0;
+    this.rightScore = 0;
+    this.gameOver = false;
+  }
+
+  private reset(context: GameContext): void {
+    this.x = context.width * 0.5;
+    this.y = context.height * 0.5;
+    this.vx = 220 * (Math.random() > 0.5 ? 1 : -1);
+    this.vy = 180 * (Math.random() > 0.5 ? 1 : -1);
+    this.paddleY = context.height / 2 - 40;
+    this.opponentY = context.height / 2 - 40;
+    this.gameOver = false;
+  }
+
+  private collides(rect: { x: number; y: number; w: number; h: number }, cx: number, cy: number, radius: number): boolean {
+    const closestX = Math.max(rect.x, Math.min(cx, rect.x + rect.w));
+    const closestY = Math.max(rect.y, Math.min(cy, rect.y + rect.h));
+    const dx = cx - closestX;
+    const dy = cy - closestY;
+    return dx * dx + dy * dy <= radius * radius;
+  }
+
+  private scorePoint(playerScored: boolean, context: GameContext): void {
+    if (playerScored) {
+      this.leftScore += 1;
+    } else {
+      this.rightScore += 1;
+    }
+
+    if (this.leftScore >= MAX_SCORE || this.rightScore >= MAX_SCORE) {
+      this.gameOver = true;
+      return;
+    }
+
+    this.reset(context);
   }
 }

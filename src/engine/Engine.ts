@@ -45,6 +45,7 @@ export class Engine {
     window.removeEventListener("resize", this.handleResize);
     cancelAnimationFrame(this.animationFrame);
     this.sceneManager.stop();
+    this.input.dispose();
   }
 
   setGame(nextGame: Game): void {
@@ -82,10 +83,10 @@ export class Engine {
       this.lastFrameTime === 0 ? 0 : Math.min((time - this.lastFrameTime) / 1000, 0.05);
     this.lastFrameTime = time;
 
+    this.input.update();
     const context = this.context;
     const current = this.sceneManager.currentGame;
     if (current) {
-      this.input.update();
       current.update(deltaSeconds, context);
       current.render(context);
     }
