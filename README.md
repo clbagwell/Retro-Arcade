@@ -79,7 +79,7 @@ Contributions are welcome! Feel free to submit pull requests or open issues.
 
 - **Language**: TypeScript
 - **Build Tool**: Vite
-- **Deployment**: GitHub Pages
+- **Deployment**: GitHub  Pages
 
 ## License
 
