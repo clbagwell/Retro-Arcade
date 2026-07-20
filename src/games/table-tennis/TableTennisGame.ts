@@ -13,7 +13,7 @@ interface SoundManager {
 }
 
 function createSoundManager(): SoundManager {
-  const baseUrl = "./assets/";
+  const baseUrl = "./";
   const hit = new Audio(baseUrl + "hit.mp3");
   const cheer = new Audio(baseUrl + "cheer.mp3");
   const boo = new Audio(baseUrl + "boo.mp3");
