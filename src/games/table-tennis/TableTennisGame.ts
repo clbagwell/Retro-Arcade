@@ -2,6 +2,43 @@ import type { Game, GameContext } from "../../engine/types";
 
 const MAX_SCORE = 5;
 
+interface SoundManager {
+  hit: HTMLAudioElement;
+  cheer: HTMLAudioElement;
+  boo: HTMLAudioElement;
+  win: HTMLAudioElement;
+  lose: HTMLAudioElement;
+  music: HTMLAudioElement;
+  play(name: keyof Omit<SoundManager, "play">): void;
+}
+
+function createSoundManager(): SoundManager {
+  const baseUrl = "./assets/";
+  const hit = new Audio(baseUrl + "hit.mp3");
+  const cheer = new Audio(baseUrl + "cheer.mp3");
+  const boo = new Audio(baseUrl + "boo.mp3");
+  const win = new Audio(baseUrl + "win.mp3");
+  const lose = new Audio(baseUrl + "lose.mp3");
+  const music = new Audio(baseUrl + "music.mp3");
+  music.loop = true;
+
+  return {
+    hit,
+    cheer,
+    boo,
+    win,
+    lose,
+    music,
+    play(name: keyof Omit<SoundManager, "play">) {
+      const audio = this[name];
+      if (audio && audio !== music) {
+        const clone = audio.cloneNode() as HTMLAudioElement;
+        clone.play().catch(() => {});
+      }
+    },
+  };
+}
+
 export class TableTennisGame implements Game {
   private x = 160;
   private y = 120;
@@ -13,9 +50,17 @@ export class TableTennisGame implements Game {
   private rightScore = 0;
   private gameOver = false;
   private hintTimer = 0;
+  private soundManager: SoundManager = createSoundManager();
+  private musicPlaying = false;
 
   init(context: GameContext): void {
     this.reset(context);
+    try {
+      this.soundManager.music.play().catch(() => {});
+      this.musicPlaying = true;
+    } catch {
+      // Music playback may fail due to autoplay policy
+    }
   }
 
   resize(context: GameContext): void {
@@ -83,11 +128,13 @@ export class TableTennisGame implements Game {
     if (this.collides(leftPaddleRect, this.x, this.y, 14)) {
       this.vx = Math.abs(this.vx);
       this.x = leftPaddleRect.x + leftPaddleRect.w + 14;
+      this.soundManager.play("hit");
     }
 
     if (this.collides(rightPaddleRect, this.x, this.y, 14)) {
       this.vx = -Math.abs(this.vx);
       this.x = rightPaddleRect.x - 14;
+      this.soundManager.play("hit");
     }
 
     if (this.x <= 0) {
@@ -182,6 +229,11 @@ export class TableTennisGame implements Game {
     this.leftScore = 0;
     this.rightScore = 0;
     this.gameOver = false;
+    if (this.musicPlaying) {
+      this.soundManager.music.pause();
+      this.soundManager.music.currentTime = 0;
+      this.musicPlaying = false;
+    }
   }
 
   private reset(context: GameContext): void {
@@ -205,12 +257,23 @@ export class TableTennisGame implements Game {
   private scorePoint(playerScored: boolean, context: GameContext): void {
     if (playerScored) {
       this.leftScore += 1;
+      this.soundManager.play("cheer");
     } else {
       this.rightScore += 1;
+      this.soundManager.play("boo");
     }
 
     if (this.leftScore >= MAX_SCORE || this.rightScore >= MAX_SCORE) {
       this.gameOver = true;
+      if (this.musicPlaying) {
+        this.soundManager.music.pause();
+        this.musicPlaying = false;
+      }
+      if (this.leftScore >= MAX_SCORE) {
+        this.soundManager.play("win");
+      } else {
+        this.soundManager.play("lose");
+      }
       return;
     }
 
