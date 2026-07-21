@@ -126,14 +126,20 @@ export class TableTennisGame implements Game {
     const rightPaddleRect = { x: width - 48, y: this.opponentY, w: 12, h: 80 };
 
     if (this.collides(leftPaddleRect, this.x, this.y, 14)) {
-      this.vx = Math.abs(this.vx);
+      this.vx = Math.abs(this.vx) * 1.05;
       this.x = leftPaddleRect.x + leftPaddleRect.w + 14;
+      // Calculate impact point on paddle (normalized -1 to 1, center is 0)
+      const impactNormal = (this.y - (this.paddleY + 40)) / 40;
+      this.vy = impactNormal * 400;
       this.soundManager.play("hit");
     }
 
     if (this.collides(rightPaddleRect, this.x, this.y, 14)) {
-      this.vx = -Math.abs(this.vx);
+      this.vx = -Math.abs(this.vx) * 1.05;
       this.x = rightPaddleRect.x - 14;
+      // Calculate impact point on paddle (normalized -1 to 1, center is 0)
+      const impactNormal = (this.y - (this.opponentY + 40)) / 40;
+      this.vy = impactNormal * 400;
       this.soundManager.play("hit");
     }
 
