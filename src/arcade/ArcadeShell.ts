@@ -29,7 +29,16 @@ export class ArcadeShell {
   }
 
   start(): void {
+    this.hideUI();
     this.engine.start();
+  }
+
+  private hideUI(): void {
+    this.panel.classList.add("hidden");
+  }
+
+  private showUI(): void {
+    this.panel.classList.remove("hidden");
   }
 
   private createGame(gameId: string): Game {
@@ -84,6 +93,7 @@ export class ArcadeShell {
 
   private selectGame(gameId: string): void {
     this.activeGameId = gameId;
+    this.showUI();
     this.engine.setGame(this.createGame(gameId));
     this.syncSelection();
   }
