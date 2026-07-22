@@ -1,6 +1,24 @@
 import type { Game, GameContext } from "../../engine/types";
 
 const MAX_SCORE = 5;
+const MENU_BUTTONS = ["easy", "medium", "hard"] as const;
+
+type Difficulty = (typeof MENU_BUTTONS)[number];
+
+interface DifficultyConfig {
+  label: string;
+  aiSpeed: number;
+  reactionDelay: number;
+  aimError: number;
+  returnSpeed: number;
+  ballSpeed: number;
+}
+
+const DIFFICULTY_CONFIG: Record<Difficulty, DifficultyConfig> = {
+  easy: { label: "Easy", aiSpeed: 180, reactionDelay: 0.22, aimError: 42, returnSpeed: 120, ballSpeed: 0.92 },
+  medium: { label: "Medium", aiSpeed: 260, reactionDelay: 0.12, aimError: 20, returnSpeed: 180, ballSpeed: 1 },
+  hard: { label: "Hard", aiSpeed: 340, reactionDelay: 0.05, aimError: 8, returnSpeed: 240, ballSpeed: 1.08 },
+};
 
 interface SoundManager {
   hit: HTMLAudioElement;
@@ -44,12 +62,15 @@ export class TableTennisGame implements Game {
   private readonly gameWidth = 800;
   private readonly gameHeight = 500;
 
+  private difficulty: Difficulty | null = null;
   private x = 160;
   private y = 120;
   private vx = 220;
   private vy = 180;
   private paddleY = 0;
   private opponentY = 0;
+  private opponentTargetY = 0;
+  private opponentTimer = 0;
   private leftScore = 0;
   private rightScore = 0;
   private gameOver = false;
@@ -58,7 +79,7 @@ export class TableTennisGame implements Game {
   private musicPlaying = false;
 
   init(_context: GameContext): void {
-    this.reset();
+    this.showDifficultyMenu();
     try {
       this.soundManager.music.play().catch(() => {});
       this.musicPlaying = true;
@@ -68,7 +89,9 @@ export class TableTennisGame implements Game {
   }
 
   resize(_context: GameContext): void {
-    this.reset();
+    if (this.difficulty !== null) {
+      this.reset();
+    }
   }
 
   update(deltaSeconds: number, context: GameContext): void {
@@ -81,12 +104,50 @@ export class TableTennisGame implements Game {
     const offsetX = (screenWidth - this.gameWidth * scale) / 2;
     const offsetY = (screenHeight - this.gameHeight * scale) / 2;
 
+    if (this.difficulty === null) {
+      if (!input) {
+        return;
+      }
+
+      if (input.anyKeyDown("Digit1", "Numpad1")) {
+        this.startGame("easy");
+        return;
+      }
+
+      if (input.anyKeyDown("Digit2", "Numpad2", "Enter", "Space")) {
+        this.startGame("medium");
+        return;
+      }
+
+      if (input.anyKeyDown("Digit3", "Numpad3")) {
+        this.startGame("hard");
+        return;
+      }
+
+      if (input.isPointerDown()) {
+        const pointerX = (input.pointer.x - offsetX) / scale;
+        const pointerY = (input.pointer.y - offsetY) / scale;
+        const buttonLeft = 200;
+        const buttonWidth = 400;
+        const buttonHeight = 52;
+        const buttonGap = 18;
+        const buttonTop = 210;
+
+        for (let i = 0; i < MENU_BUTTONS.length; i++) {
+          const top = buttonTop + i * (buttonHeight + buttonGap);
+          if (pointerX >= buttonLeft && pointerX <= buttonLeft + buttonWidth && pointerY >= top && pointerY <= top + buttonHeight) {
+            this.startGame(MENU_BUTTONS[i]);
+            return;
+          }
+        }
+      }
+
+      return;
+    }
+
     if (this.gameOver) {
       if (input?.anyKeyDown("Enter", "Space")) {
-        this.leftScore = 0;
-        this.rightScore = 0;
-        this.gameOver = false;
-        this.reset();
+        this.showDifficultyMenu();
       }
       return;
     }
@@ -126,7 +187,30 @@ export class TableTennisGame implements Game {
     }
 
     this.paddleY = Math.min(Math.max(this.paddleY, 24), this.gameHeight - 104);
-    this.opponentY = Math.min(Math.max(this.y - 40, 24), this.gameHeight - 104);
+
+    const config = DIFFICULTY_CONFIG[this.difficulty];
+    const centerTarget = this.gameHeight / 2 - 40;
+    if (this.vx > 0) {
+      if (this.opponentTimer <= 0) {
+        const aimOffset = (Math.random() * 2 - 1) * config.aimError;
+        this.opponentTargetY = Math.min(Math.max(this.y - 40 + aimOffset, 24), this.gameHeight - 104);
+        this.opponentTimer = config.reactionDelay;
+      }
+    } else {
+      this.opponentTargetY = centerTarget;
+      this.opponentTimer = 0;
+    }
+
+    this.opponentTimer = Math.max(0, this.opponentTimer - deltaSeconds);
+    const opponentSpeed = this.vx > 0 ? config.aiSpeed : config.returnSpeed;
+    const opponentDelta = this.opponentTargetY - this.opponentY;
+    const opponentStep = opponentSpeed * deltaSeconds;
+    if (Math.abs(opponentDelta) <= opponentStep) {
+      this.opponentY = this.opponentTargetY;
+    } else {
+      this.opponentY += Math.sign(opponentDelta) * opponentStep;
+    }
+    this.opponentY = Math.min(Math.max(this.opponentY, 24), this.gameHeight - 104);
 
     this.x += this.vx * deltaSeconds;
     this.y += this.vy * deltaSeconds;
@@ -178,6 +262,11 @@ export class TableTennisGame implements Game {
     ctx.fillStyle = "#020617";
     ctx.fillRect(0, 0, width, height);
 
+    if (this.difficulty === null) {
+      this.renderMenu(ctx);
+      return;
+    }
+
     // Apply scaling transform
     ctx.save();
     ctx.translate(offsetX, offsetY);
@@ -211,7 +300,7 @@ export class TableTennisGame implements Game {
       ctx.fillText(winner, this.gameWidth * 0.5 - ctx.measureText(winner).width * 0.5, this.gameHeight * 0.45);
 
       ctx.font = "500 18px ui-sans-serif, system-ui, sans-serif";
-      const prompt = "Press Enter or Space to restart";
+      const prompt = "Press Enter or Space to choose again";
       ctx.fillText(prompt, this.gameWidth * 0.5 - ctx.measureText(prompt).width * 0.5, this.gameHeight * 0.55);
     }
 
@@ -261,6 +350,7 @@ export class TableTennisGame implements Game {
     this.leftScore = 0;
     this.rightScore = 0;
     this.gameOver = false;
+    this.difficulty = null;
     if (this.musicPlaying) {
       this.soundManager.music.pause();
       this.soundManager.music.currentTime = 0;
@@ -269,13 +359,86 @@ export class TableTennisGame implements Game {
   }
 
   private reset(): void {
+    const config = this.difficulty ? DIFFICULTY_CONFIG[this.difficulty] : DIFFICULTY_CONFIG.medium;
     this.x = this.gameWidth * 0.5;
     this.y = this.gameHeight * 0.5;
-    this.vx = 220 * (Math.random() > 0.5 ? 1 : -1);
-    this.vy = 180 * (Math.random() > 0.5 ? 1 : -1);
+    this.vx = 220 * config.ballSpeed * (Math.random() > 0.5 ? 1 : -1);
+    this.vy = 180 * config.ballSpeed * (Math.random() > 0.5 ? 1 : -1);
     this.paddleY = this.gameHeight / 2 - 40;
     this.opponentY = this.gameHeight / 2 - 40;
+    this.opponentTargetY = this.opponentY;
+    this.opponentTimer = 0;
     this.gameOver = false;
+  }
+
+  private showDifficultyMenu(): void {
+    this.difficulty = null;
+    this.leftScore = 0;
+    this.rightScore = 0;
+    this.gameOver = false;
+    this.hintTimer = 0;
+    this.opponentTimer = 0;
+  }
+
+  private startGame(difficulty: Difficulty): void {
+    this.difficulty = difficulty;
+    this.leftScore = 0;
+    this.rightScore = 0;
+    this.gameOver = false;
+    this.hintTimer = 0;
+    this.reset();
+  }
+
+  private renderMenu(ctx: CanvasRenderingContext2D): void {
+    ctx.save();
+    ctx.fillStyle = "#e2e8f0";
+    ctx.textAlign = "center";
+
+    ctx.font = "700 34px ui-sans-serif, system-ui, sans-serif";
+    ctx.fillText("Table Tennis", this.gameWidth * 0.5, 118);
+
+    ctx.font = "500 18px ui-sans-serif, system-ui, sans-serif";
+    ctx.fillStyle = "#cbd5e1";
+    ctx.fillText("Choose your difficulty", this.gameWidth * 0.5, 152);
+
+    const buttonLeft = 200;
+    const buttonWidth = 400;
+    const buttonHeight = 52;
+    const buttonGap = 18;
+    const startY = 210;
+
+    for (let i = 0; i < MENU_BUTTONS.length; i++) {
+      const difficulty = MENU_BUTTONS[i];
+      const config = DIFFICULTY_CONFIG[difficulty];
+      const top = startY + i * (buttonHeight + buttonGap);
+      const isPrimary = difficulty === "medium";
+
+      ctx.fillStyle = isPrimary ? "rgba(56, 189, 248, 0.18)" : "rgba(15, 23, 42, 0.82)";
+      ctx.fillRect(buttonLeft, top, buttonWidth, buttonHeight);
+      ctx.strokeStyle = isPrimary ? "#38bdf8" : "rgba(148, 163, 184, 0.35)";
+      ctx.lineWidth = 2;
+      ctx.strokeRect(buttonLeft, top, buttonWidth, buttonHeight);
+
+      ctx.fillStyle = "#f8fafc";
+      ctx.font = "700 20px ui-sans-serif, system-ui, sans-serif";
+      ctx.fillText(config.label, this.gameWidth * 0.5, top + 23);
+
+      ctx.font = "400 13px ui-sans-serif, system-ui, sans-serif";
+      ctx.fillStyle = "#94a3b8";
+      const detail =
+        difficulty === "easy"
+          ? "Slower opponent and easier returns"
+          : difficulty === "medium"
+            ? "Balanced pacing"
+            : "Faster opponent and tighter defense";
+      ctx.fillText(detail, this.gameWidth * 0.5, top + 40);
+    }
+
+    ctx.font = "400 15px ui-sans-serif, system-ui, sans-serif";
+    ctx.fillStyle = "#cbd5e1";
+    ctx.fillText("Press 1 / 2 / 3, or tap a button", this.gameWidth * 0.5, 410);
+    ctx.fillText("Easy, Medium, Hard", this.gameWidth * 0.5, 436);
+    ctx.restore();
   }
 
   private collides(rect: { x: number; y: number; w: number; h: number }, cx: number, cy: number, radius: number): boolean {
