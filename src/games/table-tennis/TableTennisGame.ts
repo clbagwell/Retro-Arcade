@@ -40,6 +40,10 @@ function createSoundManager(): SoundManager {
 }
 
 export class TableTennisGame implements Game {
+  // Fixed game dimensions
+  private readonly gameWidth = 800;
+  private readonly gameHeight = 500;
+
   private x = 160;
   private y = 120;
   private vx = 220;
@@ -53,8 +57,8 @@ export class TableTennisGame implements Game {
   private soundManager: SoundManager = createSoundManager();
   private musicPlaying = false;
 
-  init(context: GameContext): void {
-    this.reset(context);
+  init(_context: GameContext): void {
+    this.reset();
     try {
       this.soundManager.music.play().catch(() => {});
       this.musicPlaying = true;
@@ -63,19 +67,24 @@ export class TableTennisGame implements Game {
     }
   }
 
-  resize(context: GameContext): void {
-    this.reset(context);
+  resize(_context: GameContext): void {
+    this.reset();
   }
 
   update(deltaSeconds: number, context: GameContext): void {
-    const { width, height, input } = context;
+    const { width: screenWidth, height: screenHeight, input } = context;
+
+    // Calculate scale from screen to game coordinates
+    const scaleX = screenWidth / this.gameWidth;
+    const scaleY = screenHeight / this.gameHeight;
+    const scale = Math.min(scaleX, scaleY);
 
     if (this.gameOver) {
       if (input?.anyKeyDown("Enter", "Space")) {
         this.leftScore = 0;
         this.rightScore = 0;
         this.gameOver = false;
-        this.reset(context);
+        this.reset();
       }
       return;
     }
@@ -101,8 +110,11 @@ export class TableTennisGame implements Game {
         this.paddleY += moveAmount;
       }
 
-      if (input.pointerInLeftHalf(width)) {
-        this.paddleY = input.pointer.y - 40;
+      // Scale pointer position from screen to game coordinates
+      const pointerX = input.pointer.x / scale;
+      const pointerY = input.pointer.y / scale;
+      if (input.isPointerDown() && pointerX < this.gameWidth * 0.5) {
+        this.paddleY = pointerY - 40;
       }
 
       const pad = input.getPrimaryGamepad();
@@ -111,19 +123,19 @@ export class TableTennisGame implements Game {
       }
     }
 
-    this.paddleY = Math.min(Math.max(this.paddleY, 24), height - 104);
-    this.opponentY = Math.min(Math.max(this.y - 40, 24), height - 104);
+    this.paddleY = Math.min(Math.max(this.paddleY, 24), this.gameHeight - 104);
+    this.opponentY = Math.min(Math.max(this.y - 40, 24), this.gameHeight - 104);
 
     this.x += this.vx * deltaSeconds;
     this.y += this.vy * deltaSeconds;
 
-    if (this.y <= 24 || this.y >= height - 24) {
+    if (this.y <= 24 || this.y >= this.gameHeight - 24) {
       this.vy *= -1;
-      this.y = Math.min(Math.max(this.y, 24), height - 24);
+      this.y = Math.min(Math.max(this.y, 24), this.gameHeight - 24);
     }
 
     const leftPaddleRect = { x: 24, y: this.paddleY, w: 12, h: 80 };
-    const rightPaddleRect = { x: width - 48, y: this.opponentY, w: 12, h: 80 };
+    const rightPaddleRect = { x: this.gameWidth - 48, y: this.opponentY, w: 12, h: 80 };
 
     if (this.collides(leftPaddleRect, this.x, this.y, 14)) {
       this.vx = Math.abs(this.vx) * 1.05;
@@ -144,26 +156,38 @@ export class TableTennisGame implements Game {
     }
 
     if (this.x <= 0) {
-      this.scorePoint(false, context);
+      this.scorePoint(false);
     }
 
-    if (this.x >= width) {
-      this.scorePoint(true, context);
+    if (this.x >= this.gameWidth) {
+      this.scorePoint(true);
     }
   }
 
   render({ ctx, width, height }: GameContext): void {
+    // Calculate scale to fit 800x500 game into screen
+    const scaleX = width / this.gameWidth;
+    const scaleY = height / this.gameHeight;
+    const scale = Math.min(scaleX, scaleY);
+    const offsetX = (width - this.gameWidth * scale) / 2;
+    const offsetY = (height - this.gameHeight * scale) / 2;
+
     ctx.clearRect(0, 0, width, height);
     ctx.fillStyle = "#020617";
     ctx.fillRect(0, 0, width, height);
 
+    // Apply scaling transform
+    ctx.save();
+    ctx.translate(offsetX, offsetY);
+    ctx.scale(scale, scale);
+
     ctx.strokeStyle = "#38bdf8";
     ctx.lineWidth = 2;
-    ctx.strokeRect(16, 16, width - 32, height - 32);
+    ctx.strokeRect(16, 16, this.gameWidth - 32, this.gameHeight - 32);
 
     ctx.fillStyle = "#f8fafc";
     ctx.fillRect(24, this.paddleY, 12, 80);
-    ctx.fillRect(width - 48, this.opponentY, 12, 80);
+    ctx.fillRect(this.gameWidth - 48, this.opponentY, 12, 80);
 
     ctx.fillStyle = "#fbbf24";
     ctx.beginPath();
@@ -173,20 +197,20 @@ export class TableTennisGame implements Game {
     ctx.fillStyle = "#e2e8f0";
     ctx.font = "600 20px ui-sans-serif, system-ui, sans-serif";
     ctx.fillText("Table Tennis", 28, 44);
-    ctx.fillText(`${this.leftScore} - ${this.rightScore}`, width * 0.5 - 24, 44);
+    ctx.fillText(`${this.leftScore} - ${this.rightScore}`, this.gameWidth * 0.5 - 24, 44);
 
     if (this.gameOver) {
       ctx.fillStyle = "rgba(2, 6, 23, 0.85)";
-      ctx.fillRect(0, height * 0.35, width, 140);
+      ctx.fillRect(0, this.gameHeight * 0.35, this.gameWidth, 140);
 
       ctx.fillStyle = "#f8fafc";
       ctx.font = "700 32px ui-sans-serif, system-ui, sans-serif";
       const winner = this.leftScore > this.rightScore ? "You Win!" : "Opponent Wins";
-      ctx.fillText(winner, width * 0.5 - ctx.measureText(winner).width * 0.5, height * 0.45);
+      ctx.fillText(winner, this.gameWidth * 0.5 - ctx.measureText(winner).width * 0.5, this.gameHeight * 0.45);
 
       ctx.font = "500 18px ui-sans-serif, system-ui, sans-serif";
       const prompt = "Press Enter or Space to restart";
-      ctx.fillText(prompt, width * 0.5 - ctx.measureText(prompt).width * 0.5, height * 0.55);
+      ctx.fillText(prompt, this.gameWidth * 0.5 - ctx.measureText(prompt).width * 0.5, this.gameHeight * 0.55);
     }
 
     // On-screen control hint (bottom-right) — respect user preference and animate first-show
@@ -200,13 +224,12 @@ export class TableTennisGame implements Game {
       const textWidth = ctx.measureText(hint).width;
       const boxW = textWidth + padding * 2 + 40; // extra space for icons
       const boxH = 40;
-      const boxX = Math.max(20, width - boxW - 20);
-      const boxY = height - boxH - 18;
+      const boxX = Math.max(20, this.gameWidth - boxW - 20);
+      const boxY = this.gameHeight - boxH - 18;
 
       // alpha fades out after hintTimer > 0 up to 4s
       const alpha = Math.max(0.15, 1 - Math.max(0, this.hintTimer) / 4);
 
-      ctx.save();
       ctx.globalAlpha = alpha * 0.95;
       ctx.fillStyle = "rgba(2, 6, 23, 0.6)";
       ctx.fillRect(boxX, boxY, boxW, boxH);
@@ -226,9 +249,10 @@ export class TableTennisGame implements Game {
       ctx.fillStyle = "#f8fafc";
       ctx.font = "400 14px ui-sans-serif, system-ui, sans-serif";
       ctx.fillText(hint, iconX + 64, boxY + 26);
-
-      ctx.restore();
+      ctx.globalAlpha = 1;
     }
+
+    ctx.restore();
   }
 
   destroy(): void {
@@ -242,13 +266,13 @@ export class TableTennisGame implements Game {
     }
   }
 
-  private reset(context: GameContext): void {
-    this.x = context.width * 0.5;
-    this.y = context.height * 0.5;
+  private reset(): void {
+    this.x = this.gameWidth * 0.5;
+    this.y = this.gameHeight * 0.5;
     this.vx = 220 * (Math.random() > 0.5 ? 1 : -1);
     this.vy = 180 * (Math.random() > 0.5 ? 1 : -1);
-    this.paddleY = context.height / 2 - 40;
-    this.opponentY = context.height / 2 - 40;
+    this.paddleY = this.gameHeight / 2 - 40;
+    this.opponentY = this.gameHeight / 2 - 40;
     this.gameOver = false;
   }
 
@@ -260,7 +284,7 @@ export class TableTennisGame implements Game {
     return dx * dx + dy * dy <= radius * radius;
   }
 
-  private scorePoint(playerScored: boolean, context: GameContext): void {
+  private scorePoint(playerScored: boolean): void {
     if (playerScored) {
       this.leftScore += 1;
       this.soundManager.play("cheer");
@@ -283,6 +307,6 @@ export class TableTennisGame implements Game {
       return;
     }
 
-    this.reset(context);
+    this.reset();
   }
 }
