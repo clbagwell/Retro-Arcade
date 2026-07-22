@@ -78,6 +78,8 @@ export class TableTennisGame implements Game {
     const scaleX = screenWidth / this.gameWidth;
     const scaleY = screenHeight / this.gameHeight;
     const scale = Math.min(scaleX, scaleY);
+    const offsetX = (screenWidth - this.gameWidth * scale) / 2;
+    const offsetY = (screenHeight - this.gameHeight * scale) / 2;
 
     if (this.gameOver) {
       if (input?.anyKeyDown("Enter", "Space")) {
@@ -110,9 +112,9 @@ export class TableTennisGame implements Game {
         this.paddleY += moveAmount;
       }
 
-      // Scale pointer position from screen to game coordinates
-      const pointerX = input.pointer.x / scale;
-      const pointerY = input.pointer.y / scale;
+      // Transform pointer from screen space to game space
+      const pointerX = (input.pointer.x - offsetX) / scale;
+      const pointerY = (input.pointer.y - offsetY) / scale;
       if (input.isPointerDown() && pointerX < this.gameWidth * 0.5) {
         this.paddleY = pointerY - 40;
       }
